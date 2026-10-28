@@ -81,6 +81,9 @@ details.how > div{padding:8px 0 0}
 details.how ol{padding-left:20px;margin:4px 0}
 details.how li{margin:4px 0;border-top:0}
 details.how p{margin:8px 0}
+.refs{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font-size:.92rem}
+.refs ul{margin:6px 0 0;padding-left:18px}.refs li{margin:3px 0}
+details.how pre{margin:6px 0}
 .note{border-left:3px solid var(--accent);padding:6px 12px;background:color-mix(in srgb,var(--accent) 6%,transparent);border-radius:0 8px 8px 0;margin:12px 0;font-size:.92rem}
 @media print{nav.phases,.actions,button.copy{display:none}.card{break-inside:avoid}}
 </style>
@@ -88,7 +91,7 @@ details.how p{margin:8px 0}
 <body>
 <header class="top">
   <h1>Trilha: do zero a especialista em Claude Code e Vibecoding</h1>
-  <p>12 semanas, cursos gratuitos e projetos práticos, para apoiar empresas a melhorar fluxos com IA. Atualizada em 28/10/2026.</p>
+  <p>12 semanas, cursos gratuitos e projetos práticos, para apoiar empresas a melhorar fluxos com IA. Versão para Windows 11 em notebook pessoal. Atualizada em 28/10/2026.</p>
 </header>
 
 <main>
@@ -138,6 +141,17 @@ details.how p{margin:8px 0}
   <ul>
     <li><a href="https://code.claude.com/docs/en/setup">Claude Code: instalação e requisitos (oficial)</a></li>
     <li><a href="https://code.claude.com/docs/en/features-overview">Claude Code: visão geral de recursos (oficial)</a></li>
+    <li><a href="https://code.claude.com/docs/en/permission-modes">Claude Code: modos de permissão (oficial)</a></li>
+    <li><a href="https://code.claude.com/docs/en/mcp-quickstart">Claude Code: conectar servidores MCP (oficial)</a></li>
+    <li><a href="https://code.claude.com/docs/en/skills">Claude Code: skills (oficial)</a></li>
+    <li><a href="https://code.claude.com/docs/en/hooks-guide">Claude Code: hooks (oficial)</a></li>
+    <li><a href="https://code.claude.com/docs/en/sub-agents">Claude Code: subagentes (oficial)</a></li>
+    <li><a href="https://code.claude.com/docs/en/memory">Claude Code: memória e CLAUDE.md (oficial)</a></li>
+    <li><a href="https://code.claude.com/docs/en/authentication">Claude Code: autenticação (oficial)</a></li>
+    <li><a href="https://docs.github.com/en/pages/quickstart">GitHub Pages: guia rápido (oficial)</a></li>
+    <li><a href="https://docs.github.com/en/get-started/git-basics/caching-your-github-credentials-in-git">GitHub: credenciais no Git (oficial)</a></li>
+    <li><a href="https://anthropic.skilljar.com/claude-code-101">Anthropic Academy: Claude Code 101</a></li>
+    <li><a href="https://www.deeplearning.ai/courses/claude-code-a-highly-agentic-coding-assistant">DeepLearning.AI: Claude Code, A Highly Agentic Coding Assistant</a></li>
     <li><a href="https://pasqualepillitteri.it/en/news/371/anthropic-academy-free-courses-claude">Anthropic Academy: cursos gratuitos</a></li>
     <li><a href="https://www.datacamp.com/blog/best-claude-courses">The Best Claude Courses in 2026 (DataCamp)</a></li>
     <li><a href="https://vibecodeschool.com/courses/claude-code-vibe-coding">Vibe Code School</a></li>
@@ -160,13 +174,9 @@ function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch(e) {
 
 /* ---------- Conteúdo ---------- */
 var INSTALL =
-  "# Windows (PowerShell)\n" +
+  "# Windows 11 (PowerShell)\n" +
   "irm https://claude.ai/install.ps1 | iex\n\n" +
-  "# macOS, Linux e WSL\n" +
-  "curl -fsSL https://claude.ai/install.sh | bash\n\n" +
-  "# macOS (Homebrew)\n" +
-  "brew install --cask claude-code\n\n" +
-  "# Conferir\n" +
+  "# Conferir, em um terminal novo\n" +
   "claude --version";
 
 var STRUCT =
@@ -180,15 +190,199 @@ var STRUCT =
   "    painel-cobertura-pipeline/\n" +
   "    relatorio-semanal-f7/";
 
+/* ---------- Blocos reutilizáveis ---------- */
+function CODE(s){ return "<pre><code>" + esc(s) + "</code></pre>"; }
+function A(u, t){ return "<a href=\"" + u + "\">" + t + "</a>"; }
+var D = "https://code.claude.com/docs/en/";
+var SK = "https://anthropic.skilljar.com/";
+var VCS = "https://vibecodeschool.com/learn/";
+
+var VID = [
+  ["Claude Code Tutorial Completo em Português: Do Zero ao Primeiro Projeto", "https://www.youtube.com/watch?v=Vo5ePeM3C3U"],
+  ["CURSO COMPLETO DE CLAUDE CODE (TUTORIAL PRA INICIANTES)", "https://www.youtube.com/watch?v=9-ji0LfHaVI"],
+  ["Nunca te ensinaram Claude Code assim (GUIA COMPLETO DO ZERO)", "https://www.youtube.com/watch?v=C3SvSQwylW4"]
+];
+function VIDHTML(){
+  return "<p><b>Vídeos em português.</b> Os títulos vêm da busca; não assisti. Confira a data de publicação e se mostram a versão atual do Claude Code.</p><ul>" +
+    VID.map(function(v){ return "<li>" + A(v[1], esc(v[0])) + "</li>"; }).join("") + "</ul>";
+}
+
+var PATH_WIN =
+  "$currentPath = [Environment]::GetEnvironmentVariable('PATH', 'User')\n" +
+  "[Environment]::SetEnvironmentVariable('PATH', \"$currentPath;$env:USERPROFILE\\.local\\bin\", 'User')";
+
+var SETTINGS_MODE = `{
+  "permissions": {
+    "defaultMode": "default"
+  }
+}`;
+
+var GIT_COMMIT = `git status
+git add .
+git commit -m "Primeiro commit"
+git log --oneline`;
+
+var GIT_PUSH = `git remote add origin https://github.com/SEU-USUARIO/consultoria-ia.git
+git branch -M main
+git push -u origin main`;
+
+var CLAUDE_MD_T = `# Laboratório consultoria-ia
+
+## Contexto
+Estou aprendendo Claude Code para apoiar empresas a melhorar fluxos com IA.
+Venho da gestão comercial de campo; os exemplos usam cobertura de carteira,
+funil e fechamento (F7).
+
+## Regras
+- Responda em português do Brasil, em linguagem simples.
+- Use apenas dados fictícios da pasta dados/. Nunca peça nem grave dados reais
+  de clientes ou de consultores.
+- Antes de mudar mais de um arquivo, mostre um plano e espere minha aprovação.
+- Depois de cada mudança, diga o que mudou e como eu confiro.
+- Só faça commit quando eu pedir.
+
+## Estrutura
+- projetos/: um projeto por pasta, cada um com um README de uma página
+  (problema, o que o agente fez, o que corrigi, antes e depois).
+- dados/: arquivos de exemplo, sempre fictícios.`;
+
+var CSV_EX = `consultor,carteira,visitados,pipeline,meta,f4,f5,f7
+Consultor A,120,84,540000,180000,60000,40000,35000
+Consultor B,110,55,210000,170000,20000,15000,9000
+Consultor C,95,70,480000,160000,50000,30000,28000`;
+
+var README_T = `# Caso: nome do projeto
+
+## Problema
+Em uma frase: o que doía e para quem.
+
+## O que o agente fez
+O que foi pedido e o que foi entregue.
+
+## O que eu corrigi
+Erros que encontrei ao revisar. Esta parte prova que houve revisão.
+
+## Antes e depois
+| Medida | Antes | Depois |
+| --- | --- | --- |
+| Tempo por execução | | |
+| Erros encontrados | | |
+
+## O que não funcionou
+
+## Próximo passo`;
+
+var SKILL_ECO = `---
+description: Resume as mudanças ainda não commitadas e aponta o que é arriscado. Use quando eu perguntar o que mudou, pedir uma mensagem de commit ou pedir revisão do que alterei.
+---
+
+## Mudanças atuais
+
+!\`git diff HEAD\`
+
+## Instruções
+
+Resuma as mudanças acima em dois ou três tópicos e depois liste os riscos que
+notar, como tratamento de erro ausente, valores fixos no código ou testes que
+precisam ser atualizados. Se não houver mudanças, diga que não há.`;
+
+var SKILL_FUNIL = `---
+description: Diagnostica o desempenho de um consultor de campo a partir de cobertura, pipeline e F7 e sugere uma ação aplicável em visita. Use quando eu pedir diagnóstico de consultor, análise de funil ou priorização da semana.
+---
+
+## Instruções
+
+1. Leia os dados informados (CSV ou texto). Se faltar dado necessário, como
+   valor em F4 e F5 ou % de Prioritárias, pergunte antes de assumir.
+2. Diagnostique primeiro a causa, nesta ordem: funil (pipeline contra a meta,
+   com alvo de 3x), cobertura da carteira e execução em campo.
+3. Só depois proponha a ação. Ela precisa caber na rotina de visita do
+   consultor; nada de solução que só funciona no escritório.
+4. Marque o que é dado informado e o que é estimativa.
+5. Entregue uma tabela de status (consultor, cobertura, pipeline contra meta,
+   F7) e uma ação concreta para a semana.`;
+
+var AGENT_EX = `---
+name: revisor
+description: Revisa o que foi produzido e aponta erros, riscos e pontos pouco claros
+tools: Read, Glob, Grep
+model: sonnet
+---
+
+Você é um revisor. Quando acionado, leia os arquivos pedidos e dê um retorno
+específico e aplicável sobre números, lógica, clareza e riscos. Não edite nada.`;
+
+var HOOK_JSON = `{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe",
+            "args": [
+              "-NoProfile",
+              "-ExecutionPolicy",
+              "Bypass",
+              "-File",
+              "\${CLAUDE_PROJECT_DIR}/.claude/hooks/block-rm.ps1"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}`;
+
+var HOOK_PS1 = `$callInput = [Console]::In.ReadToEnd() | ConvertFrom-Json
+$command = $callInput.tool_input.command
+
+if ($command -match 'rm -rf|Remove-Item.*-Recurse') {
+  [Console]::Error.WriteLine("Bloqueado: apagar pastas inteiras não é permitido neste projeto")
+  exit 2   # exit 2 = bloqueia a ação; o texto do stderr volta para o Claude
+}
+
+exit 0     # exit 0 = sem objeção; o fluxo normal de permissão continua`;
+
+var PROMPT_P1A = `Crie dados/carteira.csv com 9 consultores fictícios (Consultor A a Consultor I), valores inventados e as colunas: consultor,carteira,visitados,pipeline,meta,f4,f5,f7.`;
+var PROMPT_P1B = `Quero um painel de uma página só (HTML com CSS e JavaScript, sem instalar nada) que leia dados/carteira.csv e mostre, por consultor: cobertura da carteira (visitados ÷ carteira), pipeline contra a meta (alvo de 3x) e F7 fechado. Use cores simples de status (verde, amarelo, vermelho) e tabela ordenável. Antes de criar qualquer arquivo, mostre um plano e diga quais definições você está assumindo, para eu confirmar.`;
+var PROMPT_P2 = `Crie dados/ciclos.csv fictício com as colunas ciclo,consultor,meta,pipeline,f7 para os ciclos T2, T3 e T4 e 9 consultores. Depois gere uma página HTML de resumo semanal: F7 fechado contra a meta por ciclo, evolução do pipeline e os três consultores mais distantes da meta. Não use bibliotecas externas e me explique como rodar isso toda semana.`;
+var PROMPT_P4 = `Crie uma página que mostre, para um consultor escolhido, a evolução dos últimos 3 ciclos (cobertura, pipeline contra meta e F7) e uma trilha de desenvolvimento com 3 metas de aprendizado. Os dados ficam em dados/evolucao.csv, fictícios. Tom de coaching: destaque primeiro o que melhorou e só depois o que falta.`;
+
+var FLOW_T = `Etapa | Quem faz | Sistema | Tempo (min) | Onde dá errado
+1. ... | ... | ... | ... | ...
+2. ... | ... | ... | ... | ...`;
+
+var SCORE_T = `Critério (nota de 1 a 5)         | Fluxo A | Fluxo B | Fluxo C
+Repete toda semana ou todo dia   |         |         |
+Os dados estão acessíveis        |         |         |
+Resultado fácil de conferir      |         |         |
+Baixo risco se errar             |         |         |
+Tem um dono claro                |         |         |
+Soma                             |         |         |`;
+
+var OFERTA_T = `Diagnóstico e piloto de um fluxo com IA
+
+Fluxo escolhido:
+Problema hoje (com número):
+O que vou entregar: mapa do fluxo, protótipo funcionando, medição antes e depois
+Duração: de 2 a 4 semanas
+Critério de sucesso: (ex.: reduzir o tempo por execução de X para Y)
+O que o cliente precisa fornecer: acesso a um responsável, dados de teste, 2 horas por semana de um usuário
+Fora do escopo: (ex.: integração com sistemas reais, decisões sobre pessoas)
+Investimento: a definir com base nos primeiros casos`;
+
+var PROMPT_FLOW = `Transforme estas anotações do fluxo em uma tabela com as colunas etapa, quem faz, sistema, tempo e onde dá errado. Marque as etapas repetitivas e as que dependem de julgamento. Não invente tempos: onde faltar dado, deixe em branco e liste as perguntas que eu preciso fazer.`;
+
 var PHASES = [
  { id:"f0", title:"Fase 0 · Pré-requisitos e conta", when:"Semana 1",
    intro:`Computador compatível, internet e um plano pago do Claude; o resto é gratuito. Abra "Como fazer" em cada item para ver o passo a passo.`,
    warn:[
-     `<b>Computador da empresa:</b> em notebook corporativo do Grupo Cogna, a TI pode bloquear a instalação, e o instalador (um script baixado da internet) pode ser barrado pelo antivírus. Para estudar, use um computador pessoal. Para trabalhar com dados da empresa, peça aval de TI e segurança antes.`,
      `<b>Plano pago obrigatório:</b> o plano gratuito do Claude.ai não inclui o Claude Code; é preciso Pro, Max, Team, Enterprise ou conta Console (documentação oficial). A cobrança é em dólar, então o valor final no cartão inclui câmbio e impostos: confira no checkout.`,
-     `<b>Conta pessoal x conta da empresa:</b> assine com e-mail pessoal para estudar. Se a empresa tiver Claude for Teams ou Enterprise, o acesso vem por convite do administrador, e a TI pode exigir login só na conta da organização.`,
-     `<b>Dados:</b> não coloque dados reais de carteira, consultores ou clientes nos testes. Use dados fictícios.`,
-     `<b>Windows:</b> PowerShell e CMD parecem iguais, mas têm comandos diferentes. Use o PowerShell (a linha começa com <code>PS</code>).`
+     `<b>Conta pessoal x conta da empresa:</b> como o notebook é pessoal, assine com e-mail pessoal. Se um dia a empresa tiver Claude for Teams ou Enterprise, o acesso vem por convite do administrador, e a TI pode exigir login só na conta da organização.`,
+     `<b>Dados:</b> mesmo no notebook pessoal, não leve dados reais de carteira, consultores ou clientes para os testes. Use dados fictícios. Para trabalhar com dados reais, use os equipamentos e contas que a empresa autorizar.`,
+     `<b>Windows 11:</b> abra o PowerShell (a linha começa com <code>PS</code>), não o CMD, e não a versão "(x86)".`
    ],
    items:[
    {id:"f0a", t:"Plano pago do Claude contratado", m:"Pro, Max, Team ou Enterprise; o plano gratuito não dá acesso",
@@ -199,28 +393,22 @@ var PHASES = [
 <li>Confirme nas configurações da conta que o plano aparece como ativo.</li>
 </ol>
 <p>O valor de US$ 20 por mês para o Pro vem de sites de terceiros; não consegui abrir a página oficial de preços, então confirme no checkout. O plano tem limite de uso por período, e sessões longas podem esgotá-lo.</p>`},
-   {id:"f0b", t:"Computador compatível confirmado", m:"macOS 13+, Windows 10 (1809+), Ubuntu 20.04+ ou Debian 10+; 4 GB de RAM ou mais; 64 bits",
-    how:`<p><b>Windows</b></p>
-<ol>
-<li>Pressione <code>Win + R</code>, digite <code>winver</code> e dê Enter. A versão precisa ser Windows 10 1809 ou mais nova (Windows 11 serve).</li>
-<li>Em Configurações → Sistema → Sobre, confira a memória (4 GB ou mais) e o tipo de sistema (64 bits).</li>
-</ol>
-<p><b>macOS</b></p>
-<ol>
-<li>Menu Apple → Sobre Este Mac. Precisa ser macOS 13 ou mais novo. Se for mais antigo, atualize em Ajustes → Atualização de Software.</li>
-</ol>
-<p>Confira também se o Brasil consta na <a href="https://www.anthropic.com/supported-countries">lista oficial de países suportados</a>.</p>`},
+   {id:"f0b", t:"Computador compatível confirmado", m:"Seu notebook, Windows 11 de 64 bits, atende ao requisito; falta conferir a memória",
+    how:`<ol>
+<li>O Windows 11 de 64 bits atende ao requisito da documentação (Windows 10 1809 ou mais novo, processador x64 ou ARM64).</li>
+<li>Confira a memória em Configurações → Sistema → Sobre: o mínimo é 4 GB de RAM.</li>
+<li>Confira também se o Brasil consta na ${A("https://www.anthropic.com/supported-countries","lista oficial de países suportados")}.</li>
+<li>Se o Windows estiver desatualizado, rode o Windows Update antes de seguir.</li>
+</ol>`},
    {id:"f0c", t:"Git instalado e configurado", m:"Na documentação é opcional no Windows, mas a trilha usa Git a partir da Fase 1",
-    how:`<p><b>Windows</b></p>
-<ol>
-<li>Baixe o instalador em <a href="https://git-scm.com/downloads/win">git-scm.com/downloads/win</a>.</li>
+    how:`<ol>
+<li>Baixe o instalador em ${A("https://git-scm.com/downloads/win","git-scm.com/downloads/win")}.</li>
 <li>Execute e clique em Next em todas as telas, mantendo os padrões. Em "Adjusting your PATH environment", deixe a opção recomendada.</li>
 <li>Feche o PowerShell, abra um novo e rode <code>git --version</code>. Deve aparecer um número de versão.</li>
+<li>Diga ao Git quem é você (use o mesmo e-mail do GitHub):</li>
 </ol>
-<p><b>macOS:</b> abra o Terminal e rode <code>git --version</code>. Se o Git não estiver instalado, o macOS oferece instalar as ferramentas de linha de comando; aceite e espere terminar.</p>
-<p>Depois, nos dois sistemas, diga ao Git quem é você (use o mesmo e-mail do GitHub):</p>
-<pre><code>git config --global user.name "Seu Nome"
-git config --global user.email "seu-email@exemplo.com"</code></pre>`},
+${CODE("git config --global user.name \"Seu Nome\"\ngit config --global user.email \"seu-email@exemplo.com\"")}
+<p>Por que instalar: com o Git for Windows, o Claude Code usa o Git Bash como shell de comandos; sem ele, usa o PowerShell (documentação oficial). Os dois funcionam.</p>`},
    {id:"f0d", t:"Conta no GitHub criada", m:"Guarda o histórico dos projetos e hospeda esta página",
     how:`<ol>
 <li>Acesse <a href="https://github.com">github.com</a> e clique em Sign up. Informe e-mail, senha e nome de usuário.</li>
@@ -230,104 +418,514 @@ git config --global user.email "seu-email@exemplo.com"</code></pre>`},
 </ol>
 <p>Nesta fase basta ter a conta. A conexão entre o computador e o GitHub fica para o momento de enviar o primeiro projeto.</p>`},
    {id:"f0e", t:"Pasta de treino consultoria-ia criada", m:"Trabalhe sempre dentro dela",
-    how:`<p>Com o terminal aberto (próximo item), rode estes comandos, no PowerShell ou no Terminal do Mac:</p>
-<pre><code>cd ~
-mkdir consultoria-ia
-cd consultoria-ia
-git init</code></pre>
-<p>Confira com <code>pwd</code>: deve mostrar o caminho da pasta nova.</p>
+    how:`<p>Com o PowerShell aberto (próximo item), rode estes comandos:</p>
+${CODE("cd ~\nmkdir consultoria-ia\ncd consultoria-ia\ngit init")}
+<p>Confira com <code>pwd</code>: deve mostrar <code>C:\\Users\\SeuNome\\consultoria-ia</code>.</p>
 <p>Sugestão minha: crie a pasta na raiz do seu usuário, como acima, e não dentro de Documentos. No Windows, o Documentos costuma sincronizar com o OneDrive, o que pode atrapalhar projetos com muitos arquivos.</p>`},
-   {id:"f0f", t:"Sei abrir o terminal e usar pwd, ls e cd", m:"Guia oficial: code.claude.com/docs/en/terminal-guide",
-    how:`<p><b>Windows</b></p>
-<ol>
-<li>Pressione <code>Win + X</code> e escolha Windows PowerShell (ou Terminal).</li>
+   {id:"f0f", t:"Sei abrir o PowerShell e usar pwd, ls e cd", m:"Guia oficial: code.claude.com/docs/en/terminal-guide",
+    how:`<ol>
+<li>Clique com o botão direito no menu Iniciar (ou pressione <code>Win + X</code>) e escolha Terminal ou Windows PowerShell.</li>
 <li>Veja a linha de comando: se começa com <code>PS C:\\Users\\SeuNome&gt;</code>, é o PowerShell, o certo. Se mostra só <code>C:\\Users\\SeuNome&gt;</code>, é o CMD: feche e abra o PowerShell.</li>
 <li>Se abriu "Windows PowerShell (x86)", feche e abra a versão sem x86; o Claude Code não funciona em 32 bits.</li>
 <li>Para colar um comando, use <code>Ctrl + V</code> ou o botão direito.</li>
 </ol>
-<p><b>macOS:</b> pressione <code>Cmd + Espaço</code>, digite Terminal e Enter. Cole com <code>Cmd + V</code>.</p>
 <p>Quatro comandos bastam por enquanto:</p>
-<pre><code>pwd         # mostra em que pasta você está
-ls          # lista os arquivos da pasta
-cd pasta    # entra na pasta
-cd ..       # volta uma pasta</code></pre>
-<p>Quem preferir não usar terminal pode usar o app Desktop do Claude, que roda o Claude Code sem ele; o download está em <a href="https://claude.com/download">claude.com/download</a>. A trilha segue pelo terminal.</p>`}
+${CODE("pwd         # mostra em que pasta você está\nls          # lista os arquivos da pasta\ncd pasta    # entra na pasta\ncd ..       # volta uma pasta")}
+<p>Se preferir não usar terminal, o app Desktop do Claude roda o Claude Code sem ele; o download está em ${A("https://claude.com/download","claude.com/download")}. A trilha segue pelo terminal.</p>`}
  ]},
  { id:"f1", title:"Fase 1 · Instalação e primeiro uso", when:"Semana 1",
-   intro:"O instalador nativo é o método recomendado: não exige Node.js e se atualiza sozinho.",
-   extra:{ pre:INSTALL },
+   intro:`O instalador nativo é o método recomendado: não exige Node.js e se atualiza sozinho. Abra "Como fazer" em cada item.`,
+   extra:{ pre:INSTALL, label:"Comandos de instalação" },
+   refs:[
+     ["Quickstart oficial", D+"quickstart"],
+     ["Guia de terminal para iniciantes (oficial)", D+"terminal-guide"],
+     ["Solução de problemas de instalação e login (oficial)", D+"troubleshoot-install"],
+     ["Claude Code para iniciantes (Hora de Codar)", "https://horadecodar.com.br/claude-code-iniciantes/"],
+     ["Vibe Code School, lição 2: instalar o CLI", VCS+"cc-02-install-the-cli"],
+     ["Vibe Code School, lição 3: primeira conversa", VCS+"cc-03-first-conversation"]
+   ],
    items:[
-   {id:"f1a", t:"Instalador nativo executado"},
-   {id:"f1b", t:"claude --version confirmou a instalação"},
-   {id:"f1c", t:"Login feito ao rodar claude na pasta do projeto"},
-   {id:"f1d", t:"Primeiro pedido simples feito", m:"Por exemplo: \"explique o que há nesta pasta\""},
-   {id:"f1e", t:"/init gerou o CLAUDE.md"},
-   {id:"f1f", t:"/plan testado", m:"O agente propõe o plano antes de mexer em arquivos"},
-   {id:"f1g", t:"/compact e /config conhecidos", m:"Comprimir histórico longo e ajustar configurações"},
-   {id:"f1h", t:"Repositório Git criado com o primeiro commit"}
+   {id:"f1a", t:"Instalador nativo executado", m:"Cole o comando no PowerShell e espere terminar",
+    how:`<ol>
+<li>Abra o PowerShell (Fase 0, último item). Não precisa executar como administrador.</li>
+<li>Copie o comando do quadro "Comandos de instalação", acima desta lista, e cole no PowerShell.</li>
+<li>Aperte Enter e espere. O comando não mostra progresso enquanto baixa; termina quando aparece "Claude Code successfully installed!".</li>
+</ol>
+<p><b>Se aparecer erro</b>, procure o seu caso:</p>
+<ul>
+<li><code>irm is not recognized</code>: você está no CMD. Abra o PowerShell (<code>Win + X</code>).</li>
+<li><code>Could not create SSL/TLS secure channel</code>: rode a linha abaixo e repita a instalação.</li>
+<li><code>Claude Code does not support 32-bit Windows</code>: você abriu o "Windows PowerShell (x86)". Abra o sem x86.</li>
+<li>Outros erros: ${A(D+"troubleshoot-install","guia oficial de solução de problemas")}.</li>
+</ul>
+${CODE("[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12")}
+${VIDHTML()}`},
+   {id:"f1b", t:"claude --version confirmou a instalação", m:"Feche e abra um PowerShell novo antes de testar",
+    how:`<ol>
+<li>Feche o PowerShell e abra um novo.</li>
+<li>Rode <code>claude --version</code>. Deve aparecer um número de versão, como <code>2.1.211 (Claude Code)</code>.</li>
+<li>Se aparecer "claude is not recognized", a pasta de instalação ainda não está no PATH. Rode o bloco abaixo, feche e abra o PowerShell de novo e teste outra vez.</li>
+</ol>
+${CODE(PATH_WIN)}
+<p>Para um diagnóstico completo, rode <code>claude doctor</code>: ele mostra a saúde da instalação sem abrir uma sessão. Mais detalhes em ${A(D+"troubleshoot-install","solução de problemas")}.</p>`},
+   {id:"f1c", t:"Login feito ao rodar claude na pasta do projeto", m:"A conta do plano pago abre no navegador",
+    how:`<ol>
+<li>No terminal, entre na pasta de treino e inicie o Claude Code:</li>
+</ol>
+${CODE("cd ~/consultoria-ia\nclaude")}
+<ol start="2">
+<li>Na primeira vez, o navegador abre para o login. Entre com a conta do plano pago.</li>
+<li>Se o navegador não abrir, aperte <code>c</code> para copiar o endereço de login e cole no navegador.</li>
+<li>Se o navegador mostrar um código em vez de voltar ao terminal, cole o código no prompt "Paste code here if prompted".</li>
+<li>Quando aparecer "Login successful", aperte Enter.</li>
+</ol>
+<p><b>Para conferir e sair:</b> digite <code>/status</code> para ver qual conta e método estão ativos. Para sair, digite <code>exit</code> ou <code>Ctrl + D</code> duas vezes. <code>Esc</code> interrompe o Claude enquanto ele trabalha.</p>
+<p><b>Atenção:</b> se o seu computador tiver a variável <code>ANTHROPIC_API_KEY</code> (de outro projeto) e você aprovar o uso dela, o Claude Code usa a chave em vez da assinatura. O <code>/status</code> mostra qual está valendo. Veja ${A(D+"authentication","autenticação")} na documentação.</p>`},
+   {id:"f1d", t:"Primeiro pedido simples feito", m:"E o modo de permissão conferido antes de aprovar qualquer coisa",
+    how:`<ol>
+<li>Com o <code>claude</code> aberto na pasta <code>consultoria-ia</code>, digite: <code>explique o que há nesta pasta</code>.</li>
+<li>Depois peça algo pequeno, como no guia oficial: <code>faça uma página simples que diga olá mundo</code>.</li>
+<li>Quando ele pedir permissão para criar ou mudar arquivos, leia o pedido e aperte Enter para aprovar.</li>
+<li>Abra o arquivo HTML criado com dois cliques e veja o resultado no navegador.</li>
+</ol>
+<p><b>Confira o modo de permissão antes do passo 3.</b> Segundo a documentação, a partir da versão 2.1.283 as sessões no terminal começam em modo automático, em que um classificador, e não você, avalia as ações; a própria documentação avisa que ele não garante segurança. Veja a versão com <code>claude --version</code>. Para aprovar cada ação, aperte <code>Shift + Tab</code> até a barra de status mostrar <code>⏸ manual mode on</code>.</p>
+<p>Para deixar o modo manual como padrão:</p>
+<ol>
+<li>Saia do Claude (<code>exit</code>) e, no PowerShell, rode <code>notepad $env:USERPROFILE\\.claude\\settings.json</code>.</li>
+<li>Se o Bloco de Notas perguntar se quer criar o arquivo, clique em Sim. Se o arquivo já tiver conteúdo, adicione só o bloco <code>permissions</code>, separado do resto por vírgula.</li>
+<li>Cole o bloco abaixo e salve.</li>
+</ol>
+${CODE(SETTINGS_MODE)}
+<p>Mais em ${A(D+"permission-modes","modos de permissão")}. Para iniciantes, a documentação indica o modo manual e o modo de plano; o <code>bypassPermissions</code> é só para ambientes isolados.</p>`},
+   {id:"f1e", t:"/init gerou o CLAUDE.md", m:"O arquivo de memória do projeto, lido em toda sessão",
+    how:`<ol>
+<li>Dentro do Claude Code, digite <code>/init</code> e aprove o que ele pedir.</li>
+<li>Ele analisa o projeto e cria o <code>CLAUDE.md</code>. Como a pasta está quase vazia, o arquivo deve ficar curto; vamos completá-lo na Fase 3.</li>
+<li>Abra o <code>CLAUDE.md</code> no editor de texto e leia. Conferir o que o agente anotou faz parte do aprendizado.</li>
+</ol>
+<p>A documentação recomenda manter cada CLAUDE.md abaixo de 200 linhas e escrever instruções concretas e verificáveis. O CLAUDE.md é contexto, não trava: para bloquear uma ação de verdade, use um hook (Fase 3).</p>
+<p>Leia ${A(D+"memory","como o Claude lembra do seu projeto")} e a ${A(VCS+"cc-05-claude-md-and-memory","lição 5 do Vibe Code School")}.</p>`},
+   {id:"f1f", t:"/plan testado", m:"O agente propõe o plano antes de mexer em arquivos",
+    how:`<ol>
+<li>Entre no modo de plano de um destes jeitos: aperte <code>Shift + Tab</code> até ver <code>⏸ plan mode on</code>, ou comece o pedido com <code>/plan</code>.</li>
+<li>Peça algo que mexa em mais de um arquivo, por exemplo: <code>/plan quero uma página com a tabela de 3 consultores fictícios e a cobertura de cada um</code>.</li>
+<li>Leia o plano. Escolha "Yes, manually approve edits" para aprovar e revisar cada edição, ou "No, keep planning" para pedir ajustes.</li>
+<li>Para editar o plano você mesmo antes de aprovar, aperte <code>Ctrl + G</code>; ele abre no seu editor de texto.</li>
+<li>Para sair do modo de plano sem aprovar, aperte <code>Shift + Tab</code> de novo.</li>
+</ol>
+<p>No modo de plano o Claude lê arquivos e roda comandos de exploração, mas não edita nada até você aprovar. Veja ${A(D+"permission-modes","modos de permissão")} e a ${A(VCS+"cc-15-plan-mode","lição 16 do Vibe Code School")}.</p>`},
+   {id:"f1g", t:"/compact, /config e /help conhecidos", m:"Comprimir histórico longo, ajustar configurações e ver comandos",
+    how:`<ol>
+<li><code>/help</code> lista os comandos disponíveis.</li>
+<li><code>/config</code> abre as configurações do Claude Code.</li>
+<li><code>/compact</code> comprime o histórico da conversa quando ela fica longa, para liberar espaço de contexto. Use quando perceber que o Claude começa a esquecer o que combinou.</li>
+</ol>
+<p>Leia ${A(D+"commands","lista de comandos")} e ${A(D+"context-window","como funciona a janela de contexto")} na documentação. Os comandos <code>/compact</code> e <code>/config</code> aparecem em um guia de terceiros; confirme com <code>/help</code> na sua versão.</p>`},
+   {id:"f1h", t:"Primeiro commit feito no Git", m:"O botão de desfazer dos seus projetos",
+    how:`<ol>
+<li>Saia do Claude (<code>exit</code>) ou abra um segundo terminal na pasta <code>consultoria-ia</code>.</li>
+<li>Rode, uma linha por vez:</li>
+</ol>
+${CODE(GIT_COMMIT)}
+<ol start="3">
+<li>Se o Git disser "Please tell me who you are", rode os dois comandos <code>git config</code> da Fase 0 e repita o <code>git commit</code>.</li>
+</ol>
+<p>Você também pode pedir ao Claude: <code>faça um commit com uma mensagem clara</code>. O curso oficial Claude Code 101 ensina esse ciclo: explorar, planejar, codar e commitar. Crie o hábito de commitar antes de qualquer mudança grande. Veja a ${A(VCS+"cc-09-git-and-commits","lição 9 do Vibe Code School")}.</p>`},
+   {id:"f1i", t:"Laboratório enviado ao GitHub (repositório privado)", m:"Guarda o histórico e funciona como backup",
+    how:`<ol>
+<li>Em ${A("https://github.com","github.com")}, clique no <code>+</code> do topo e em New repository.</li>
+<li>Nome: <code>consultoria-ia</code>. Escolha <b>Private</b> e <b>não marque</b> README, .gitignore nem licença; o repositório precisa nascer vazio.</li>
+<li>Na pasta do projeto, rode (troque <code>SEU-USUARIO</code> pelo seu usuário do GitHub):</li>
+</ol>
+${CODE(GIT_PUSH)}
+<ol start="4">
+<li>No primeiro envio, o Git abre o navegador para você entrar no GitHub e autorizar. Se pedir, confirme a verificação em duas etapas. Nas vezes seguintes ele usa as credenciais guardadas.</li>
+<li>Atualize a página do repositório no GitHub: os arquivos devem aparecer.</li>
+</ol>
+<p>O gerenciador de credenciais vem com o Git for Windows. Se o Git pedir usuário e senha em vez de abrir o navegador, siga ${A("https://docs.github.com/en/get-started/git-basics/caching-your-github-credentials-in-git","o guia oficial de credenciais")}. Passo a passo geral: ${A("https://docs.github.com/en/migrations/importing-source-code/using-the-command-line-to-import-source-code/adding-locally-hosted-code-to-github","adicionar código local ao GitHub")}.</p>
+<p>O repositório é privado porque o laboratório pode ter prompts e dados de teste. Nunca envie dados reais da empresa.</p>`},
+   {id:"f1j", t:"Esta trilha publicada no GitHub Pages", m:"Sua página de acompanhamento no ar",
+    how:`<ol>
+<li>No GitHub, crie um repositório <b>público</b> chamado <code>SEU-USUARIO.github.io</code> (o nome tem de ser exatamente esse, segundo a ${A("https://docs.github.com/en/pages/quickstart","documentação do GitHub Pages")}). Marque Add README e clique em Create repository.</li>
+<li>Envie o arquivo <code>index.html</code> desta página: no repositório, Add file, depois Upload files, arraste o arquivo e clique em Commit changes.</li>
+<li>Abra Settings, depois Pages (em "Code and automation"). Em "Build and deployment", deixe Source como "Deploy from a branch" e escolha a branch <code>main</code>.</li>
+<li>Visite <code>https://SEU-USUARIO.github.io</code>. A documentação avisa que mudanças podem levar até 10 minutos para aparecer.</li>
+</ol>
+<p><b>Cuidados:</b> a página fica pública, então nada privado nela. O seu progresso fica salvo só no navegador de quem marca, não no GitHub; use Exportar de vez em quando. Pelo que conheço do GitHub, o plano gratuito costuma exigir repositório público para o Pages; confirme no seu plano.</p>`}
  ]},
  { id:"f2", title:"Fase 2 · Cursos gratuitos na ordem certa", when:"Semanas 1 a 9",
-   intro:"Primeiro a base oficial da Anthropic, depois prática guiada de vibecoding, depois skills e MCP. Durações segundo as fontes; confira em cada site.",
+   intro:`Primeiro a base oficial da Anthropic, depois prática guiada de vibecoding, depois skills e MCP. Durações segundo as fontes; confira em cada site. Dica de estudo: deixe o terminal aberto ao lado e repita no seu projeto cada comando que o curso mostrar.`,
+   refs:[
+     ["Claude 101", SK+"claude-101"],
+     ["Claude Code 101", SK+"claude-code-101"],
+     ["Claude Code in Action", SK+"claude-code-in-action"],
+     ["Introduction to Agent Skills", SK+"introduction-to-agent-skills"],
+     ["Introduction to Model Context Protocol", SK+"introduction-to-model-context-protocol"],
+     ["Introduction to Claude Cowork", SK+"introduction-to-claude-cowork"],
+     ["Introduction to subagents", SK+"introduction-to-subagents"],
+     ["Vibe Code School: curso de vibecoding com Claude Code", "https://vibecodeschool.com/courses/claude-code-vibe-coding"],
+     ["DeepLearning.AI: Claude Code, A Highly Agentic Coding Assistant", "https://www.deeplearning.ai/courses/claude-code-a-highly-agentic-coding-assistant"],
+     ["Conversion Academy: Introdução ao Claude Code", "https://www.conversion.com.br/academy/curso/introducao-claude-code"]
+   ],
    items:[
-   {id:"f2a", t:"1. Claude 101", m:"Anthropic Academy · cerca de 2 h · base de uso do Claude no trabalho"},
-   {id:"f2b", t:"2. Claude Code 101", m:"Anthropic Academy · 1,5 a 3 h · fluxo Explorar, Planejar, Codar e Commitar"},
-   {id:"f2c", t:"3. Vibe Coding using Claude Code", m:"<a href=\"https://vibecodeschool.com/courses/claude-code-vibe-coding\">Vibe Code School</a> · cerca de 14 h, 28 lições · prática guiada sem exigir experiência prévia"},
-   {id:"f2d", t:"4. Claude Code in Action", m:"Anthropic Academy · 1 a 3 h · contexto, GitHub, comandos e edição de código"},
-   {id:"f2e", t:"5. Curso em português da Conversion Academy", m:"<a href=\"https://www.conversion.com.br/academy/curso/introducao-claude-code\">Introdução ao Claude Code</a> · 6 módulos · não exige programação, segundo a página"},
-   {id:"f2f", t:"6. Introduction to Agent Skills", m:"Anthropic Academy · cerca de 2,5 h · empacotar instruções repetidas em skills"},
-   {id:"f2g", t:"7. Introduction to Model Context Protocol", m:"Anthropic Academy · duração não confirmada · conectar o Claude a sistemas externos"},
-   {id:"f2h", t:"8. Claude Code: A Highly Agentic Coding Assistant", m:"DeepLearning.AI · cerca de 1 h 50 · reforço com foco em MCP"},
-   {id:"f2i", t:"9. Introduction to Claude Cowork", m:"Anthropic Academy · duração não confirmada · fluxos de escritório, também para perfis não técnicos"},
-   {id:"f2j", t:"Building with the Claude API", opt:true, m:"Anthropic Academy · mais de 8 h · só se quiser construir soluções que chamam o Claude por código"},
-   {id:"f2k", t:"Curso da ValorFinal", opt:true, m:"<a href=\"https://valorfinal.com.br/cursos/claude-code\">95 aulas, cerca de 40 h</a> · certificado só para assinantes · qualidade não avaliada"}
+   {id:"f2a", t:"1. Claude 101", m:`Anthropic Academy · cerca de 2 h · base de uso do Claude no trabalho`,
+    how:`<ol>
+<li>Abra ${A(SK+"claude-101","anthropic.skilljar.com/claude-101")}.</li>
+<li>Clique para se inscrever (gratuito) e crie a conta da plataforma de cursos. O Claude Code 101 mostra "Register | FREE" e exige conta nessa plataforma; espere o mesmo aqui.</li>
+<li>Assista às lições e faça os quizzes. Quem termina recebe certificado.</li>
+<li>Pratique logo depois: use o Claude na sua rotina comercial, como resumo de reunião ou rascunho de e-mail, antes de ir para o código.</li>
+</ol>
+<p>A duração de cerca de 2 horas vem de um ranking de terceiros (DataCamp).</p>`},
+   {id:"f2b", t:"2. Claude Code 101", m:`Anthropic Academy · 1,5 a 3 h · fluxo Explorar, Planejar, Codar e Commitar`,
+    how:`<ol>
+<li>Abra ${A(SK+"claude-code-101","anthropic.skilljar.com/claude-code-101")} e clique em Register (gratuito); é preciso uma conta na plataforma de cursos, não uma conta Anthropic.</li>
+<li>Faça o curso com o terminal aberto ao lado. Em cada lição, repita o comando na pasta <code>consultoria-ia</code>.</li>
+<li>Responda ao quiz de cada parte e ao quiz final.</li>
+</ol>
+<p><b>O que a página lista:</b> o que é o Claude Code, como funciona, primeiro prompt, instalação, rotinas do dia a dia, o fluxo explorar, planejar, codar e commitar, gestão de contexto, revisão de código e personalização (CLAUDE.md, subagentes, skills, MCP e hooks). A página não informa a duração total; ranking de terceiros fala em 1,5 a 3 horas.</p>`},
+   {id:"f2c", t:"3. Vibe Coding using Claude Code", m:`Vibe Code School · cerca de 14 h, 28 lições · prática guiada, sem cadastro`,
+    how:`<p>Segundo o site, o curso é gratuito, sem cadastro, com 28 lições em 5 módulos (cerca de 14 horas), progresso salvo no navegador e certificado ao final. Ritmo sugerido: módulos 1 e 2 na semana 2, módulos 3 e 4 na semana 3, módulo 5 e Projeto 1 na semana 4.</p>
+<p><b>Módulo 1 · Fundamentos:</b> ${A(VCS+"cc-01-what-is-claude-code","1. O que é")}, ${A(VCS+"cc-02-install-the-cli","2. Instalar o CLI")}, ${A(VCS+"cc-03-first-conversation","3. Primeira conversa")}, ${A(VCS+"cc-04-the-agentic-loop","4. Loop agêntico")}, ${A(VCS+"cc-05-claude-md-and-memory","5. CLAUDE.md e memória")}</p>
+<p><b>Módulo 2 · Fluxos básicos:</b> ${A(VCS+"cc-06-reading-and-editing","6. Ler e editar")}, ${A(VCS+"cc-07-searching-the-codebase","7. Buscar no código")}, ${A(VCS+"cc-08-running-tests","8. Rodar testes")}, ${A(VCS+"cc-09-git-and-commits","9. Git e commits")}, ${A(VCS+"cc-10-multi-file-refactors","10. Vários arquivos")}, ${A(VCS+"cc-11-debugging","11. Depurar")}</p>
+<p><b>Módulo 3 · Recursos avançados:</b> ${A(VCS+"cc-12-slash-commands","12. Comandos /")}, ${A(VCS+"cc-13-custom-slash-commands","13. Seu comando")}, ${A(VCS+"cc-28-agent-skills","14. Skills")}, ${A(VCS+"cc-14-subagents","15. Subagentes")}, ${A(VCS+"cc-15-plan-mode","16. Modo de plano")}, ${A(VCS+"cc-16-hooks","17. Hooks")}, ${A(VCS+"cc-17-mcp-servers","18. MCP")}</p>
+<p><b>Módulo 4 · Padrões de vibecoding:</b> ${A(VCS+"cc-18-spec-tests-code","19. Especificação, testes, código")}, ${A(VCS+"cc-19-iterative-refinement","20. Refinamento")}, ${A(VCS+"cc-20-when-to-interrupt","21. Quando interromper")}, ${A(VCS+"cc-21-code-review","22. Revisão")}, ${A(VCS+"cc-22-pair-programming-flow","23. Fluxo em dupla")}</p>
+<p><b>Módulo 5 · Projetos reais:</b> ${A(VCS+"cc-23-nextjs-feature","24. Next.js")}, ${A(VCS+"cc-24-tests-first","25. Testes primeiro")}, ${A(VCS+"cc-25-legacy-migration","26. Código legado")}, ${A(VCS+"cc-26-shipping-to-production","27. Publicar")}, ${A(VCS+"cc-27-capstone","28. Projeto final")}</p>
+<p>Atenção: pelos títulos, o módulo 5 é voltado a desenvolvedores (Next.js, migração de código legado). Não fiz o curso; adapte esse módulo usando o seu Projeto 1 como projeto final.</p>`},
+   {id:"f2d", t:"4. Claude Code in Action", m:`Anthropic Academy · 1 a 3 h · contexto, GitHub, comandos e edição de código`,
+    how:`<ol>
+<li>Faça depois do Claude Code 101 e de pelo menos um projeto seu. Abra ${A(SK+"claude-code-in-action","anthropic.skilljar.com/claude-code-in-action")} e inscreva-se (gratuito).</li>
+<li>Acompanhe com o terminal aberto. O foco é o fluxo completo: ler arquivos, rodar comandos, editar, gerir contexto e integrar com o GitHub.</li>
+<li>Depois do curso, refaça no Projeto 1 um fluxo que você ainda faz na mão.</li>
+</ol>
+<p>A duração (1 a 3 horas) varia entre as fontes de terceiros. Para a integração com GitHub, veja também ${A(D+"github-actions","Claude Code GitHub Actions")} na documentação.</p>`},
+   {id:"f2e", t:"5. Curso em português da Conversion Academy", m:`Introdução ao Claude Code · 6 módulos · não exige programação, segundo a página`,
+    how:`<ol>
+<li>Abra ${A("https://www.conversion.com.br/academy/curso/introducao-claude-code","o curso")} e clique em "Comece agora, é grátis". O botão leva a uma página de inscrição, então espere precisar de cadastro.</li>
+<li>Faça os 6 módulos: abertura; a diferença entre os modelos e produtos; plano, modelo e custos; o que é uma Skill e quando usar; prompting no Claude Code; encerramento.</li>
+<li>Professor: Nícolas Simionato, analista de BI. A página não informa a duração total.</li>
+</ol>
+<p>Bom para fechar lacunas de vocabulário em português, principalmente plano, modelo e custos.</p>`},
+   {id:"f2f", t:"6. Introduction to Agent Skills", m:`Anthropic Academy · cerca de 2,5 h · empacotar instruções repetidas em skills`,
+    how:`<ol>
+<li>Abra ${A(SK+"introduction-to-agent-skills","anthropic.skilljar.com/introduction-to-agent-skills")} e inscreva-se (gratuito).</li>
+<li>Faça na semana 6, junto com o Projeto 3: assim a skill que você criar é a do seu caso.</li>
+<li>Termine criando a skill <code>diagnostico-funil</code> (Fase 4, Projeto 3).</li>
+</ol>
+<p>Leia também ${A(D+"skills","a página de skills da documentação")} e a ${A(VCS+"cc-28-agent-skills","lição 14 do Vibe Code School")}.</p>`},
+   {id:"f2g", t:"7. Introduction to Model Context Protocol", m:`Anthropic Academy · duração não confirmada · conectar o Claude a sistemas externos`,
+    how:`<ol>
+<li>Abra ${A(SK+"introduction-to-model-context-protocol","anthropic.skilljar.com/introduction-to-model-context-protocol")} e inscreva-se (gratuito).</li>
+<li>Faça na semana 7, junto com o item de MCP da Fase 3, e conecte um servidor de teste de verdade.</li>
+<li>Se quiser ir mais fundo depois, existe o curso ${A(SK+"model-context-protocol-advanced-topics","MCP: Advanced Topics")}.</li>
+</ol>
+<p>A documentação tem o ${A(D+"mcp-quickstart","passo a passo para conectar o primeiro servidor")}.</p>`},
+   {id:"f2h", t:"8. Claude Code: A Highly Agentic Coding Assistant", m:`DeepLearning.AI · cerca de 2 h · em inglês · reforço com foco em fluxos`,
+    how:`<ol>
+<li>Abra ${A("https://www.deeplearning.ai/courses/claude-code-a-highly-agentic-coding-assistant","a página do curso")} e clique em "Enroll for Free".</li>
+<li>Instrutor: Elie Schoppik, da Anthropic. São 10 vídeos, com leituras e um quiz.</li>
+<li>A página diz que o acesso é gratuito por tempo limitado, durante o beta da plataforma, e que o certificado e a tarefa avaliada exigem a assinatura PRO. Veja se ainda é gratuito antes de planejar.</li>
+<li>Pré-requisito citado: familiaridade com Python e Git. Se Python for um obstáculo, priorize as aulas sobre configuração e entendimento do código, adicionar funcionalidades, testes e depuração, e GitHub com hooks.</li>
+</ol>
+<p>As aulas incluem refatorar um notebook Jupyter e criar um painel, o que combina com o seu Projeto 1.</p>`},
+   {id:"f2i", t:"9. Introduction to Claude Cowork", m:`Anthropic Academy · duração não confirmada · fluxos de escritório sem terminal`,
+    how:`<ol>
+<li>Abra ${A(SK+"introduction-to-claude-cowork","anthropic.skilljar.com/introduction-to-claude-cowork")} e inscreva-se (gratuito).</li>
+<li>Faça na semana 9. Fontes de terceiros dizem que o curso foi pensado também para perfis não técnicos.</li>
+<li>Escolha um fluxo de escritório seu (por exemplo, preparar o relatório semanal) e tente resolvê-lo sem o terminal.</li>
+</ol>
+<p>Confira o conteúdo atual na página do curso antes de começar; o nome e o escopo do produto podem ter mudado.</p>`},
+   {id:"f2l", t:"Introduction to subagents", opt:true, m:`Anthropic Academy · duração não confirmada · complemento para a Fase 3`,
+    how:`<p>Abra ${A(SK+"introduction-to-subagents","anthropic.skilljar.com/introduction-to-subagents")} se quiser aprofundar o item de subagentes da Fase 3. Não li o conteúdo; confira o que ele cobre.</p>`},
+   {id:"f2j", t:"Building with the Claude API", opt:true, m:`Anthropic Academy · mais de 8 h · só se quiser construir soluções que chamam o Claude por código`,
+    how:`<p>No site ${A("https://anthropic.skilljar.com","anthropic.skilljar.com")}, procure o curso "Building with the Claude API". Não confirmei o endereço exato da página. Vale depois da semana 7, se você quiser criar soluções que chamam o Claude por código e não apenas usar o Claude Code.</p>`},
+   {id:"f2k", t:"Curso da ValorFinal", opt:true, m:`95 aulas, cerca de 40 h · certificado só para assinantes · qualidade não avaliada`,
+    how:`<ol>
+<li>Abra ${A("https://valorfinal.com.br/cursos/claude-code","valorfinal.com.br/cursos/claude-code")}. A página indica 19 módulos, 95 aulas, cerca de 40 horas e atualização em 13/07/2026.</li>
+<li>O certificado é para assinantes. Não avaliei a qualidade; veja as aulas gratuitas antes de decidir se compensa o tempo.</li>
+</ol>`}
  ]},
  { id:"f3", title:"Fase 3 · Setup profissional", when:"Semanas 6 a 8",
-   intro:"Cinco camadas, cada uma resolvendo um problema. Comece pequeno: um CLAUDE.md curto, só os servidores MCP que usa, um hook de segurança e uma skill para trabalho repetido.",
+   intro:`Cinco camadas, cada uma resolvendo um problema. Comece pequeno: um CLAUDE.md curto, só os servidores MCP que usar, um hook de segurança e uma skill para trabalho repetido.`,
    extra:{ pre:STRUCT, label:"Estrutura de pastas sugerida" },
+   refs:[
+     ["Visão geral dos recursos: CLAUDE.md, skills, MCP, subagentes e hooks", D+"features-overview"],
+     ["Boas práticas do Claude Code", D+"best-practices"],
+     ["Memória e CLAUDE.md", D+"memory"],
+     ["Skills", D+"skills"],
+     ["MCP: conectar o primeiro servidor", D+"mcp-quickstart"],
+     ["Hooks: guia", D+"hooks-guide"],
+     ["Subagentes", D+"sub-agents"],
+     ["Permissões", D+"permissions"],
+     ["Claude Code no VS Code", D+"vs-code"]
+   ],
    items:[
-   {id:"f3a", t:"CLAUDE.md curto, revisado e ajustado", m:"Contexto fixo que entra em toda sessão"},
-   {id:"f3b", t:"Primeira skill criada em .claude/skills", m:"Fluxo sob demanda, como \"diagnóstico de funil\""},
-   {id:"f3c", t:"Um servidor MCP conectado a uma fonte de teste", m:"Conexão com Drive, planilhas ou CRM de teste"},
-   {id:"f3d", t:"Um hook de segurança configurado", m:"Roda sempre; serve para regras que não podem falhar, como bloquear ações perigosas"},
-   {id:"f3e", t:"Um subagente de revisão criado", m:"Contexto isolado para pesquisa ou revisão"},
-   {id:"f3f", t:"Editor e GitHub integrados ao fluxo", m:"Sugestão: VS Code para ler o que o agente produz"},
-   {id:"f3g", t:"Aprovação das ações do agente mantida ligada", m:"Enquanto estiver aprendendo; commit antes de mudanças grandes"}
+   {id:"f3a", t:"CLAUDE.md curto, revisado e ajustado", m:"Contexto fixo que entra em toda sessão",
+    how:`<ol>
+<li>Abra o <code>CLAUDE.md</code> gerado pelo <code>/init</code> na pasta <code>consultoria-ia</code>.</li>
+<li>Reescreva com regras concretas e verificáveis. Use o modelo abaixo como ponto de partida e troque pelo seu contexto.</li>
+<li>Mantenha abaixo de 200 linhas. O que serve só para um projeto vai no <code>CLAUDE.md</code> da pasta desse projeto.</li>
+<li>Teste: abra uma sessão nova com <code>claude</code> e peça algo que dependa das regras (por exemplo, "crie um dado de exemplo"). Veja se ele usa só dados fictícios.</li>
+</ol>
+${CODE(CLAUDE_MD_T)}
+<p>Lembrete da documentação: o Claude trata o CLAUDE.md como contexto, não como regra imposta. Para impedir uma ação de verdade, use um hook (item abaixo). Veja ${A(D+"memory","memória e CLAUDE.md")} e o ${A(D+"best-practices","guia de boas práticas")}.</p>`},
+   {id:"f3b", t:"Primeira skill criada em .claude/skills", m:"Fluxo sob demanda, como \"diagnóstico de funil\"",
+    how:`<ol>
+<li>No PowerShell, na pasta do projeto, crie a pasta da skill: <code>mkdir .claude/skills/resumir-mudancas</code>. O nome da pasta vira o comando.</li>
+<li>Crie dentro dela o arquivo <code>SKILL.md</code> com o conteúdo abaixo (adaptado do exemplo oficial). O jeito mais seguro é pedir ao Claude: <code>crie o arquivo .claude/skills/resumir-mudancas/SKILL.md com este conteúdo</code> e colar o texto. Ou use o VS Code (item "Editor", abaixo).</li>
+<li>Abra um projeto com Git, altere um arquivo, inicie o <code>claude</code> e rode <code>/resumir-mudancas</code>. Ou pergunte "o que eu mudei?": o Claude carrega a skill sozinho quando a descrição combina.</li>
+</ol>
+${CODE(SKILL_ECO)}
+<p><b>Cuidado no Windows:</b> o Bloco de Notas pode salvar o arquivo como <code>SKILL.md.txt</code>, e aí a skill não é encontrada. No Explorador de Arquivos, ative Exibir → Mostrar → Extensões de nomes de arquivo para conferir.</p>
+<p>A linha que começa com <code>!</code> e o comando entre crases roda o <code>git diff HEAD</code> e coloca o resultado na skill antes de o Claude ler. A descrição é o que diz ao Claude quando usar a skill. Veja ${A(D+"skills","skills na documentação")}, o curso ${A(SK+"introduction-to-agent-skills","Introduction to Agent Skills")} e a ${A(VCS+"cc-28-agent-skills","lição 14 do Vibe Code School")}. A skill do seu caso entra na Fase 4, Projeto 3.</p>`},
+   {id:"f3c", t:"Um servidor MCP conectado a uma fonte de teste", m:"Conexão com Drive, planilhas ou CRM de teste",
+    how:`<p>Comece com o servidor da própria documentação do Claude Code: é hospedado, não pede login e serve para treinar o fluxo.</p>
+<ol>
+<li>No terminal (fora de uma sessão do Claude), registre o servidor:</li>
+</ol>
+${CODE("claude mcp add --transport http claude-code-docs https://code.claude.com/docs/mcp")}
+<ol start="2">
+<li>Confira a conexão com <code>claude mcp list</code>. Deve aparecer <code>✔ Connected</code>.</li>
+<li>Inicie o <code>claude</code> e peça: <code>Use o servidor claude-code-docs para procurar o que a variável MCP_TIMEOUT faz</code>. Aprove a permissão quando pedir. A chamada aparece com o nome do servidor.</li>
+<li>Dentro da sessão, <code>/mcp</code> mostra e gerencia os servidores conectados.</li>
+<li>Para remover: <code>claude mcp remove claude-code-docs</code>.</li>
+</ol>
+<p><b>Próximo passo, para o seu caso:</b> escolha um servidor com fonte de teste (por exemplo, uma planilha fictícia) no ${A(D+"mcp#find-and-build-mcp-servers","diretório de servidores")}. Servidores com login (OAuth) pedem autenticação pelo <code>/mcp</code>.</p>
+<p><b>Cuidados:</b> cada servidor ocupa espaço de contexto, então conecte só o que for usar. Um servidor dá acesso real a um sistema: comece com conta de teste e permissão de leitura. O CRM da empresa só com autorização da TI e da segurança. O escopo padrão é local (só você, só este projeto); <code>--scope user</code> vale para todos os seus projetos. Veja o ${A(D+"mcp-quickstart","passo a passo oficial")} e o curso ${A(SK+"introduction-to-model-context-protocol","Introduction to MCP")}.</p>`},
+   {id:"f3d", t:"Um hook de segurança configurado", m:"Roda sempre; serve para regras que não podem falhar, como bloquear ações perigosas",
+    how:`<p>Um hook é um comando que o Claude Code executa em momentos fixos. Ao contrário do CLAUDE.md, ele sempre roda. Exemplo abaixo: bloquear comandos que apagam pastas inteiras. A versão é a de PowerShell, que não exige Git Bash nem instalar nada.</p>
+<ol>
+<li>Crie a pasta <code>.claude/hooks</code> e, nela, o script <code>block-rm.ps1</code> com o conteúdo abaixo. Peça ao Claude para criar o arquivo com este texto, ou use o VS Code.</li>
+<li>Registre o hook em <code>.claude/settings.json</code> (do projeto). Se o arquivo já tiver outras chaves, adicione só o bloco <code>hooks</code>.</li>
+<li>Dentro do Claude Code, digite <code>/hooks</code>: o hook deve aparecer em <code>PreToolUse</code>.</li>
+<li>Teste com um comando inofensivo: <code>rode o comando: echo rm -rf teste</code>. O hook deve bloquear, porque olha o texto do comando.</li>
+</ol>
+${CODE(HOOK_PS1)}
+${CODE(HOOK_JSON)}
+<p>O formato do registro (<code>powershell.exe</code> com <code>args</code>) e a leitura da entrada vêm do exemplo da ${A(D+"hooks","referência oficial de hooks")}; o trecho que bloqueia com <code>exit 2</code> é o padrão comum de PowerShell, e eu não o testei no seu computador. Se algo falhar, peça ao Claude para ajustar o script e teste de novo.</p>
+<p><b>Atenção:</b> hooks rodam código com as suas permissões. Leia qualquer hook antes de ativar, inclusive os que o Claude escrever. Veja o ${A(D+"hooks-guide","guia de hooks")} (ele traz também um primeiro exemplo simples, de notificação) e a ${A(VCS+"cc-16-hooks","lição 17 do Vibe Code School")}.</p>`},
+   {id:"f3e", t:"Um subagente de revisão criado", m:"Contexto isolado para pesquisa ou revisão",
+    how:`<ol>
+<li>Crie a pasta <code>.claude/agents</code> no projeto (vale só para ele) ou <code>~/.claude/agents</code> (vale para todos os projetos).</li>
+<li>Crie o arquivo <code>.claude/agents/revisor.md</code> com o conteúdo abaixo (adaptado do exemplo oficial). Só <code>name</code> e <code>description</code> são obrigatórios; <code>tools</code> limita o que o subagente pode fazer. Aqui ele só lê: não edita arquivos nem roda comandos.</li>
+<li>Se você criou a pasta <code>agents</code> durante uma sessão, reinicie o Claude Code para ele encontrá-la.</li>
+<li>Chame o subagente: <code>Peça ao subagente revisor para olhar o painel que acabei de criar</code>. Para garantir que é ele, digite <code>@</code> e escolha na lista.</li>
+</ol>
+${CODE(AGENT_EX)}
+<p>O comando <code>/agents</code> mostra a orientação para criar subagentes. Veja ${A(D+"sub-agents","subagentes na documentação")}, o curso ${A(SK+"introduction-to-subagents","Introduction to subagents")} e a ${A(VCS+"cc-14-subagents","lição 15 do Vibe Code School")}.</p>`},
+   {id:"f3f", t:"Editor e GitHub integrados ao fluxo", m:"Sugestão: VS Code para ler o que o agente produz",
+    how:`<ol>
+<li>Instale o VS Code em ${A("https://code.visualstudio.com","code.visualstudio.com")}.</li>
+<li>Abra a pasta <code>consultoria-ia</code> (File, depois Open Folder). Deixe o terminal do Claude de um lado e os arquivos do outro: você vê o que o agente muda.</li>
+<li>Para usar o Claude Code dentro do VS Code, siga ${A(D+"vs-code","o guia oficial")}; não repito os passos aqui porque não os testei.</li>
+<li>Confirme que o <code>git push</code> da Fase 1 continua funcionando depois de cada projeto.</li>
+</ol>`},
+   {id:"f3g", t:"Aprovação das ações do agente mantida ligada", m:"Enquanto estiver aprendendo; commit antes de mudanças grandes",
+    how:`<ol>
+<li>Confira o modo: aperte <code>Shift + Tab</code> até a barra mostrar <code>⏸ manual mode on</code>.</li>
+<li>Fixe o modo manual como padrão, como na Fase 1 (<code>notepad $env:USERPROFILE\\.claude\\settings.json</code> e o bloco abaixo). Isso importa porque, segundo a documentação, a partir da versão 2.1.283 o padrão no terminal é o modo automático.</li>
+<li>Antes de qualquer mudança grande, faça um commit (<code>git add .</code> e <code>git commit -m "antes da mudança"</code>).</li>
+<li>Depois da mudança, rode <code>git status</code> e <code>git diff</code> para ler o que foi alterado.</li>
+</ol>
+${CODE(SETTINGS_MODE)}
+<p>Para iniciantes, a documentação indica o modo manual e o modo de plano; o modo automático exige cuidado, e o <code>bypassPermissions</code> é só para ambientes isolados.</p>
+<p><b>Windows nativo:</b> segundo a documentação, o isolamento de comandos (sandbox) não é suportado no Windows nativo, só no WSL 2. Por isso a aprovação manual e os hooks pesam mais aqui. Veja ${A(D+"permission-modes","modos de permissão")}, ${A(D+"permissions","permissões")} e ${A(D+"checkpointing","checkpoints")}.</p>`}
  ]},
  { id:"f4", title:"Fase 4 · Projetos práticos (portfólio)", when:"Semanas 4 a 10",
-   intro:"Quatro projetos pequenos, cada um com antes e depois medido. Use sempre dados fictícios ou anonimizados e confirme a política da empresa para dados de CRM em ferramentas de IA.",
+   intro:`Quatro projetos pequenos, cada um com antes e depois medido. Use sempre dados fictícios ou anonimizados e confirme a política da empresa para dados de CRM em ferramentas de IA. Os projetos e as definições de métrica abaixo são exemplos meus: ajuste cobertura, pipeline e F7 às definições da sua empresa.`,
+   refs:[
+     ["Boas práticas do Claude Code", D+"best-practices"],
+     ["Fluxos comuns", D+"common-workflows"],
+     ["Biblioteca de prompts", D+"prompt-library"],
+     ["Vibe Code School, lição 19: especificação, testes, código", VCS+"cc-18-spec-tests-code"],
+     ["Vibe Code School, lição 22: revisão com Claude", VCS+"cc-21-code-review"]
+   ],
    items:[
    {g:"Projeto 1 · Painel Cobertura x Pipeline (semana 4)"},
-   {id:"p1a", t:"Construído com dados fictícios", m:"Página HTML com cobertura e pipeline por consultor, a partir de um CSV"},
-   {id:"p1b", t:"Revisado por mim, número por número"},
-   {id:"p1c", t:"Antes e depois medido"},
-   {id:"p1d", t:"Página do caso publicada no repositório"},
+   {id:"p1a", t:"Construído com dados fictícios", m:"Página HTML com cobertura e pipeline por consultor, a partir de um CSV",
+    how:`<ol>
+<li>Crie a pasta <code>projetos/painel-cobertura-pipeline</code> e, na raiz do laboratório, a pasta <code>dados</code>. Abra o <code>claude</code> na pasta <code>consultoria-ia</code>, em modo manual.</li>
+<li>Peça os dados fictícios (9 linhas, como o seu time):</li>
+</ol>
+${CODE(PROMPT_P1A)}
+<ol start="3">
+<li>Entre no modo de plano (<code>Shift + Tab</code>) e peça o painel:</li>
+</ol>
+${CODE(PROMPT_P1B)}
+<ol start="4">
+<li>Leia o plano e confirme ou corrija as definições. Elas são suas: cobertura como visitados ÷ carteira e alvo de 3x no pipeline são exemplos, e F4 e F5 só entram se você disser como usá-los.</li>
+<li>Aprove, deixe ele criar e abra o <code>index.html</code> da pasta do projeto no navegador.</li>
+</ol>
+<p>Formato dos dados de exemplo (valores inventados):</p>
+${CODE(CSV_EX)}
+<p>Se o Claude Code pedir para instalar algo, prefira recusar e pedir uma versão sem dependências. Veja a ${A(VCS+"cc-18-spec-tests-code","lição 19 do Vibe Code School")}.</p>`},
+   {id:"p1b", t:"Revisado por mim, número por número", m:"Revisão é o que separa um protótipo de uma armadilha convincente",
+    how:`<ol>
+<li>Escolha 2 consultores do CSV e refaça as contas no Excel ou na calculadora: cobertura, pipeline ÷ meta e F7.</li>
+<li>Compare com o que a tela mostra. Qualquer diferença é um erro a corrigir, não um detalhe.</li>
+<li>Teste um caso de borda: um consultor com carteira zero, ou com linha faltando. A página deve avisar, não quebrar.</li>
+<li>Peça ao subagente <code>revisor</code> uma segunda leitura e compare com a sua.</li>
+<li>Anote cada erro que você achou; vão para o README.</li>
+</ol>`},
+   {id:"p1c", t:"Antes e depois medido", m:"Sem número, o projeto não prova nada",
+    how:`<ol>
+<li>Cronometre quanto tempo você leva hoje para montar esta mesma visão no Excel ou no Power BI, da exportação até a tela pronta.</li>
+<li>Cronometre o caminho com o agente, contando o pedido, a revisão e as correções.</li>
+<li>Registre também o número de erros que a revisão encontrou.</li>
+<li>Se o agente não ganhou tempo, escreva isso: é um resultado honesto e útil para escolher o próximo fluxo.</li>
+</ol>`},
+   {id:"p1d", t:"Página do caso publicada no repositório", m:"Uma folha por projeto",
+    how:`<ol>
+<li>Crie <code>projetos/painel-cobertura-pipeline/README.md</code> com o modelo abaixo (peça ao Claude para criar o arquivo vazio com os títulos, e você preenche).</li>
+<li>Faça o commit e o push:</li>
+</ol>
+${CODE(README_T)}
+${CODE("git add .\ngit commit -m \"Projeto 1: painel cobertura x pipeline\"\ngit push")}
+<p>Este mesmo modelo vale para os outros três projetos.</p>`},
    {g:"Projeto 3 · Skill de diagnóstico de funil (semana 6)"},
-   {id:"p3a", t:"Skill construída", m:"Recebe os dados e devolve causa provável (funil, cobertura ou execução) e ação"},
-   {id:"p3b", t:"Revisada por mim"},
-   {id:"p3c", t:"Antes e depois medido"},
-   {id:"p3d", t:"Página do caso publicada"},
+   {id:"p3a", t:"Skill construída", m:"Recebe os dados e devolve causa provável (funil, cobertura ou execução) e ação",
+    how:`<ol>
+<li>Crie a pasta <code>.claude/skills/diagnostico-funil</code> e dentro dela o <code>SKILL.md</code> com o conteúdo abaixo. Ele reflete a lógica que você usa: diagnóstico antes da ação, pergunta quando falta dado, ação que cabe na rotina de campo.</li>
+<li>Abra o <code>claude</code> e rode <code>/diagnostico-funil</code> colando os dados do CSV fictício, ou pergunte "faça o diagnóstico do Consultor B".</li>
+</ol>
+${CODE(SKILL_FUNIL)}
+<p>Ajuste as instruções ao seu jeito de decidir. Veja ${A(D+"skills","skills na documentação")}.</p>`},
+   {id:"p3b", t:"Revisada por mim", m:"A skill deve errar na sua frente, antes de errar no cliente",
+    how:`<ol>
+<li>Teste com um consultor que tenha pipeline fraco, um com cobertura baixa e um bom. O diagnóstico deve mudar de causa.</li>
+<li>Apague de propósito uma coluna (por exemplo, F5) e veja se a skill pergunta antes de assumir.</li>
+<li>Leia a ação sugerida e pergunte: um consultor consegue fazer isso numa visita? Se não, ajuste a instrução 3.</li>
+</ol>`},
+   {id:"p3c", t:"Antes e depois medido", m:"Tempo e consistência do diagnóstico",
+    how:`<ol>
+<li>Meça quanto tempo leva hoje para fazer o diagnóstico de um consultor sem a skill.</li>
+<li>Meça com a skill, incluindo a revisão.</li>
+<li>Compare também a consistência: rode o mesmo caso duas vezes e anote se a conclusão mudou.</li>
+</ol>`},
+   {id:"p3d", t:"Página do caso publicada", m:"Mesmo modelo de uma folha",
+    how:`<p>Crie <code>projetos/skill-diagnostico-funil/README.md</code> com o modelo de uma folha (veja o Projeto 1, último item), preencha e faça o <code>git push</code>.</p>`},
    {g:"Projeto 2 · Relatório semanal de F7 (semana 8)"},
-   {id:"p2a", t:"Script construído", m:"Transforma o export do CRM em resumo de fechamento e evolução de pipeline por ciclo"},
-   {id:"p2b", t:"Revisado por mim"},
-   {id:"p2c", t:"Antes e depois medido"},
-   {id:"p2d", t:"Página do caso publicada"},
+   {id:"p2a", t:"Script construído", m:"Transforma o export do CRM em resumo de fechamento e evolução de pipeline por ciclo",
+    how:`<ol>
+<li>Crie a pasta <code>projetos/relatorio-semanal-f7</code>.</li>
+<li>No modo de plano, use o pedido abaixo. Ele pede uma página HTML sem bibliotecas, para você não precisar instalar Python.</li>
+<li>Se preferir um script, confira se há Python com <code>python --version</code> no PowerShell. Se o Windows abrir a Microsoft Store ou disser que não encontrou, o Python não está instalado: fique com a versão em HTML.</li>
+<li>Rode no navegador (ou no terminal) e confirme que ele ensina como repetir toda semana.</li>
+</ol>
+${CODE(PROMPT_P2)}
+<p>Para trocar o dado fictício por um export real do CRM, só depois de autorização da empresa e com dados anonimizados.</p>`},
+   {id:"p2b", t:"Revisado por mim", m:"Mesma disciplina do Projeto 1",
+    how:`<ol>
+<li>Refaça na mão o F7 de um ciclo e de um consultor e compare.</li>
+<li>Verifique se a ordem dos três mais distantes da meta está certa.</li>
+<li>Teste um ciclo sem dados. O relatório deve avisar.</li>
+</ol>`},
+   {id:"p2c", t:"Antes e depois medido", m:"Tempo por semana",
+    how:`<ol>
+<li>Meça quanto tempo você gasta hoje para montar esse resumo toda semana.</li>
+<li>Meça o tempo com o relatório automatizado, contando a conferência.</li>
+<li>Multiplique pela quantidade de semanas de um ciclo para mostrar o ganho acumulado; deixe claro que é projeção.</li>
+</ol>`},
+   {id:"p2d", t:"Página do caso publicada", m:"Mesmo modelo de uma folha",
+    how:`<p>Crie <code>projetos/relatorio-semanal-f7/README.md</code> com o modelo (Projeto 1, último item) e faça o <code>git push</code>.</p>`},
    {g:"Projeto 4 · Ferramenta de coaching por consultor (semana 10)"},
-   {id:"p4a", t:"Ferramenta construída", m:"Evolução individual e trilha de desenvolvimento, alimentada por planilha"},
-   {id:"p4b", t:"Revisada por mim"},
-   {id:"p4c", t:"Antes e depois medido"},
-   {id:"p4d", t:"Página do caso publicada"}
+   {id:"p4a", t:"Ferramenta construída", m:"Evolução individual e trilha de desenvolvimento, alimentada por planilha",
+    how:`<ol>
+<li>Crie a pasta <code>projetos/coaching-consultor</code>.</li>
+<li>No modo de plano, use o pedido abaixo. A ideia vem da sua análise semanal de cobertura x pipeline com foco em desenvolvimento: o tom é de coaching, não de controle.</li>
+<li>Gere os dados fictícios em <code>dados/evolucao.csv</code> e abra a página no navegador.</li>
+<li>Opcional, depois de funcionar: ler a planilha por um servidor MCP em vez de CSV (Fase 3).</li>
+</ol>
+${CODE(PROMPT_P4)}
+<p><b>Atenção:</b> este projeto trata de pessoas. Com dados fictícios, tudo bem. Antes de usar com o time real, alinhe com o seu diretor e com RH ou jurídico: é assunto de clima e de LGPD.</p>`},
+   {id:"p4b", t:"Revisada por mim", m:"Cuidado extra: o texto fala de pessoas",
+    how:`<ol>
+<li>Confira os números como nos outros projetos.</li>
+<li>Leia o tom como se fosse o consultor lendo: o texto estimula ou constrange? Reescreva o que soar como cobrança.</li>
+<li>Peça ao subagente <code>revisor</code> uma leitura do tom.</li>
+</ol>`},
+   {id:"p4c", t:"Antes e depois medido", m:"Tempo de preparo do 1:1 e qualidade da conversa",
+    how:`<ol>
+<li>Meça o tempo que você gasta hoje para preparar o acompanhamento de um consultor.</li>
+<li>Meça com a ferramenta, incluindo a revisão.</li>
+<li>Se testar com o time real, só depois do alinhamento acima, pergunte ao consultor se a conversa ficou mais útil (nota de 1 a 5).</li>
+</ol>`},
+   {id:"p4d", t:"Página do caso publicada", m:"Mesmo modelo de uma folha",
+    how:`<p>Crie <code>projetos/coaching-consultor/README.md</code> com o modelo (Projeto 1, último item) e faça o <code>git push</code>.</p>`}
  ]},
  { id:"f5", title:"Fase 5 · Apoiar empresas a melhorar fluxos com IA", when:"Semanas 11 e 12",
-   intro:"O valor que você vende é escolher o fluxo certo, entregar um piloto que funciona no dia a dia e provar o ganho com número. Método sugerido, para ajustar com os primeiros casos reais.",
+   intro:`O valor que você vende é escolher o fluxo certo, entregar um piloto que funciona no dia a dia e provar o ganho com número. Método sugerido por mim, para ajustar com os primeiros casos reais.`,
+   refs:[
+     ["Segurança do Claude Code (documentação oficial)", D+"security"],
+     ["Uso de dados do Claude Code (documentação oficial)", D+"data-usage"],
+     ["Permissões", D+"permissions"],
+     ["Hooks: guia", D+"hooks-guide"],
+     ["Custos do Claude Code", D+"costs"],
+     ["LGPD, Lei nº 13.709/2018 (Planalto)", "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"]
+   ],
    items:[
-   {id:"f5a", t:"Mapeei o fluxo atual", m:"Quem faz o quê, em qual sistema, quanto tempo leva e onde há retrabalho; acompanhe a rotina real"},
-   {id:"f5b", t:"Escolhi um fluxo pequeno", m:"Repetitivo, com dado acessível e resultado fácil de conferir; evite decisões sobre pessoas, metas ou remuneração"},
-   {id:"f5c", t:"Consultei jurídico e TI sobre dados antes de conectar sistemas reais", m:"LGPD e política interna de segurança"},
-   {id:"f5d", t:"Prototipei em dias com dados fictícios e mostrei ao usuário final"},
-   {id:"f5e", t:"Validei com quem usa", m:"Tempo economizado e erros encontrados na revisão humana"},
-   {id:"f5f", t:"Implantei com guarda-corpos", m:"Permissões mínimas, hooks, revisão humana e versão no Git"},
-   {id:"f5g", t:"Medi e documentei", m:"Antes e depois, custo de uso, instruções de manutenção e dono do fluxo"},
-   {id:"f5h", t:"Oferta de diagnóstico escrita", m:"Diagnóstico de um fluxo com piloto de 2 a 4 semanas; preço definido com base nos primeiros casos"}
+   {id:"f5a", t:"Mapeei o fluxo atual", m:"Quem faz o quê, em qual sistema, quanto tempo leva e onde há retrabalho; acompanhe a rotina real",
+    how:`<ol>
+<li>Peça para acompanhar 2 ou 3 execuções reais do fluxo, como você faz numa visita de campo: observe, não só pergunte.</li>
+<li>Preencha a tabela abaixo com tempos medidos, não estimados.</li>
+<li>Pergunte a quem executa: "onde isso dá errado?". As respostas são o seu mapa de oportunidades.</li>
+<li>Se quiser ajuda para organizar as anotações, use o pedido abaixo com texto anonimizado.</li>
+</ol>
+${CODE(FLOW_T)}
+${CODE(PROMPT_FLOW)}`},
+   {id:"f5b", t:"Escolhi um fluxo pequeno", m:"Repetitivo, com dado acessível e resultado fácil de conferir; evite decisões sobre pessoas, metas ou remuneração",
+    how:`<ol>
+<li>Liste de 3 a 5 fluxos candidatos do mapa.</li>
+<li>Dê nota de 1 a 5 em cada critério abaixo e some. Escolha o de maior soma.</li>
+<li>Descarte, ao menos no primeiro piloto, fluxos que decidem sobre pessoas, metas ou remuneração.</li>
+<li>Escreva a escolha em uma frase, com o número de hoje (por exemplo, "o relatório leva 3 horas por semana").</li>
+</ol>
+${CODE(SCORE_T)}
+<p>Os critérios são uma sugestão minha; adapte aos casos que você encontrar.</p>`},
+   {id:"f5c", t:"Consultei jurídico e TI sobre dados antes de conectar sistemas reais", m:"LGPD e política interna de segurança",
+    how:`<p>Não sou advogado: o que segue é uma lista de perguntas para levar às pessoas certas, não parecer.</p>
+<ol>
+<li>Quais dados o fluxo usa? Há dados pessoais de clientes ou de colaboradores? (A ${A("https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm","LGPD")} é a lei de referência.)</li>
+<li>A empresa permite usar ferramentas de IA com esses dados? Em qual plano e com qual contrato (Team, Enterprise ou outro)?</li>
+<li>Onde os dados são processados e por quanto tempo ficam guardados? Leia antes o que a documentação oficial diz sobre ${A(D+"data-usage","uso de dados")} e ${A(D+"security","segurança")}.</li>
+<li>Quem terá acesso e como o acesso é retirado ao final do piloto?</li>
+<li>Peça autorização por escrito antes de conectar qualquer sistema real. Enquanto isso, trabalhe com dados fictícios ou anonimizados.</li>
+</ol>`},
+   {id:"f5d", t:"Prototipei em dias com dados fictícios e mostrei ao usuário final", m:"O protótipo serve para o time reagir, não para impressionar",
+    how:`<ol>
+<li>Use o fluxo da Fase 4: plano, protótipo com dados fictícios, revisão sua.</li>
+<li>Marque 30 minutos com quem executa o fluxo e deixe a pessoa mexer; não faça demonstração só olhando.</li>
+<li>Anote o que ela tentou fazer, onde travou e o que pediu.</li>
+<li>Ajuste e repita. Dois ciclos curtos valem mais que um protótipo grande.</li>
+</ol>`},
+   {id:"f5e", t:"Validei com quem usa", m:"Tempo economizado e erros encontrados na revisão humana",
+    how:`<ol>
+<li>Peça para o usuário rodar o fluxo com o protótipo pelo menos 10 vezes (número sugerido por mim).</li>
+<li>Registre, em cada execução: tempo, erros encontrados na revisão humana e nota de utilidade de 1 a 5.</li>
+<li>Compare com o tempo e os erros do fluxo atual, medidos no item "Mapeei o fluxo".</li>
+<li>Registre também o que o agente errou: é o que você precisa mostrar ao cliente.</li>
+</ol>`},
+   {id:"f5f", t:"Implantei com guarda-corpos", m:"Permissões mínimas, hooks, revisão humana e versão no Git",
+    how:`<ol>
+<li><b>Permissões mínimas:</b> libere só o que o fluxo precisa. Veja ${A(D+"permissions","permissões")}.</li>
+<li><b>Hooks:</b> bloqueie ações perigosas de forma garantida (Fase 3). Veja o ${A(D+"hooks-guide","guia de hooks")}.</li>
+<li><b>Revisão humana:</b> defina quem confere a saída antes de ela ser usada e em quais casos.</li>
+<li><b>Versão no Git:</b> instruções, skills e configurações no repositório do cliente, com commits claros.</li>
+<li><b>Saída:</b> descreva como desligar o fluxo se algo der errado.</li>
+</ol>`},
+   {id:"f5g", t:"Medi e documentei", m:"Antes e depois, custo de uso, instruções de manutenção e dono do fluxo",
+    how:`<ol>
+<li>Feche o caso com o modelo de uma folha da Fase 4 e a tabela antes e depois.</li>
+<li>Registre o custo de uso (plano e consumo). Veja ${A(D+"costs","custos do Claude Code")}.</li>
+<li>Escreva as instruções de manutenção: onde estão os arquivos, como atualizar e o que checar toda semana.</li>
+<li>Nomeie o dono do fluxo no cliente. Sem dono, o piloto morre.</li>
+</ol>`},
+   {id:"f5h", t:"Oferta de diagnóstico escrita", m:"Diagnóstico de um fluxo com piloto de 2 a 4 semanas; preço definido com base nos primeiros casos",
+    how:`<ol>
+<li>Use o modelo abaixo e preencha com o seu primeiro caso medido.</li>
+<li>Deixe o preço em aberto até ter dois ou três casos: você ainda não sabe quanto tempo leva de verdade.</li>
+<li>Mostre os casos do portfólio (Fase 4) junto com a oferta.</li>
+</ol>
+${CODE(OFERTA_T)}`}
  ]}
 ];
 
@@ -409,6 +1007,10 @@ PHASES.forEach(function(ph){
     ul.appendChild(li);
   });
   sec.appendChild(ul);
+  if (ph.refs) {
+    var rf = el("div", {"class":"refs"}, "<b>Links úteis desta fase</b><ul>" + ph.refs.map(function(r){ return "<li><a href=\"" + r[1] + "\">" + esc(r[0]) + "</a></li>"; }).join("") + "</ul>");
+    sec.appendChild(rf);
+  }
   phasesEl.appendChild(sec);
   var a = el("a", {href:"#"+ph.id}, esc(ph.title.split(" · ")[0]) + "<span id=\"nv-"+ph.id+"\">0%</span>");
   nav.appendChild(a);
