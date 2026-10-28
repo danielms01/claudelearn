@@ -74,6 +74,13 @@ button.copy{position:absolute;top:6px;right:6px;padding:2px 8px;font-size:.75rem
 input[type=date]{font:inherit;padding:4px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
 footer{max-width:900px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:.85rem}
 footer ul{padding-left:18px}
+.note ul{margin:6px 0 0;padding-left:18px}.note li{margin:6px 0}
+details.how{margin:0 0 10px 36px;font-size:.92rem}
+details.how summary{cursor:pointer;color:var(--accent);font-weight:600}
+details.how > div{padding:8px 0 0}
+details.how ol{padding-left:20px;margin:4px 0}
+details.how li{margin:4px 0;border-top:0}
+details.how p{margin:8px 0}
 .note{border-left:3px solid var(--accent);padding:6px 12px;background:color-mix(in srgb,var(--accent) 6%,transparent);border-radius:0 8px 8px 0;margin:12px 0;font-size:.92rem}
 @media print{nav.phases,.actions,button.copy{display:none}.card{break-inside:avoid}}
 </style>
@@ -175,15 +182,76 @@ var STRUCT =
 
 var PHASES = [
  { id:"f0", title:"Fase 0 · Pré-requisitos e conta", when:"Semana 1",
-   intro:"Computador compatível, internet e um plano pago do Claude; o resto é gratuito.",
-   note:"O plano gratuito do Claude.ai não dá acesso ao Claude Code, segundo um blog brasileiro. Confirme preço e acesso na página oficial antes de assinar.",
+   intro:`Computador compatível, internet e um plano pago do Claude; o resto é gratuito. Abra "Como fazer" em cada item para ver o passo a passo.`,
+   warn:[
+     `<b>Computador da empresa:</b> em notebook corporativo do Grupo Cogna, a TI pode bloquear a instalação, e o instalador (um script baixado da internet) pode ser barrado pelo antivírus. Para estudar, use um computador pessoal. Para trabalhar com dados da empresa, peça aval de TI e segurança antes.`,
+     `<b>Plano pago obrigatório:</b> o plano gratuito do Claude.ai não inclui o Claude Code; é preciso Pro, Max, Team, Enterprise ou conta Console (documentação oficial). A cobrança é em dólar, então o valor final no cartão inclui câmbio e impostos: confira no checkout.`,
+     `<b>Conta pessoal x conta da empresa:</b> assine com e-mail pessoal para estudar. Se a empresa tiver Claude for Teams ou Enterprise, o acesso vem por convite do administrador, e a TI pode exigir login só na conta da organização.`,
+     `<b>Dados:</b> não coloque dados reais de carteira, consultores ou clientes nos testes. Use dados fictícios.`,
+     `<b>Windows:</b> PowerShell e CMD parecem iguais, mas têm comandos diferentes. Use o PowerShell (a linha começa com <code>PS</code>).`
+   ],
    items:[
-   {id:"f0a", t:"Plano pago do Claude contratado", m:"O Pro (US$ 20 por mês) é a porta de entrada"},
-   {id:"f0b", t:"Computador compatível confirmado", m:"macOS 13+, Windows 10 (1809+), Ubuntu 20.04+ ou Debian 10+; 4 GB de RAM ou mais"},
-   {id:"f0c", t:"Git instalado", m:"No Windows nativo, o Git para Windows é recomendado; sem ele o Claude Code usa o PowerShell"},
-   {id:"f0d", t:"Conta no GitHub criada", m:"Guarda o histórico dos projetos e permite desfazer erros"},
-   {id:"f0e", t:"Pasta de treino consultoria-ia criada", m:"Trabalhe sempre dentro dela"},
-   {id:"f0f", t:"Li o guia de terminal oficial", m:"Só se você nunca usou terminal. <a href=\"https://code.claude.com/docs/en/terminal-guide\">code.claude.com/docs/en/terminal-guide</a>"}
+   {id:"f0a", t:"Plano pago do Claude contratado", m:"Pro, Max, Team ou Enterprise; o plano gratuito não dá acesso",
+    how:`<ol>
+<li>Acesse <a href="https://claude.ai">claude.ai</a> e crie a conta com e-mail pessoal (ou entre, se já tiver).</li>
+<li>Abra <a href="https://claude.com/pricing">claude.com/pricing</a> e escolha o plano Pro. Só considere o Max se for usar o dia inteiro.</li>
+<li>Pague com cartão que aceite compra internacional e veja no checkout o valor final em reais, com câmbio e impostos.</li>
+<li>Confirme nas configurações da conta que o plano aparece como ativo.</li>
+</ol>
+<p>O valor de US$ 20 por mês para o Pro vem de sites de terceiros; não consegui abrir a página oficial de preços, então confirme no checkout. O plano tem limite de uso por período, e sessões longas podem esgotá-lo.</p>`},
+   {id:"f0b", t:"Computador compatível confirmado", m:"macOS 13+, Windows 10 (1809+), Ubuntu 20.04+ ou Debian 10+; 4 GB de RAM ou mais; 64 bits",
+    how:`<p><b>Windows</b></p>
+<ol>
+<li>Pressione <code>Win + R</code>, digite <code>winver</code> e dê Enter. A versão precisa ser Windows 10 1809 ou mais nova (Windows 11 serve).</li>
+<li>Em Configurações → Sistema → Sobre, confira a memória (4 GB ou mais) e o tipo de sistema (64 bits).</li>
+</ol>
+<p><b>macOS</b></p>
+<ol>
+<li>Menu Apple → Sobre Este Mac. Precisa ser macOS 13 ou mais novo. Se for mais antigo, atualize em Ajustes → Atualização de Software.</li>
+</ol>
+<p>Confira também se o Brasil consta na <a href="https://www.anthropic.com/supported-countries">lista oficial de países suportados</a>.</p>`},
+   {id:"f0c", t:"Git instalado e configurado", m:"Na documentação é opcional no Windows, mas a trilha usa Git a partir da Fase 1",
+    how:`<p><b>Windows</b></p>
+<ol>
+<li>Baixe o instalador em <a href="https://git-scm.com/downloads/win">git-scm.com/downloads/win</a>.</li>
+<li>Execute e clique em Next em todas as telas, mantendo os padrões. Em "Adjusting your PATH environment", deixe a opção recomendada.</li>
+<li>Feche o PowerShell, abra um novo e rode <code>git --version</code>. Deve aparecer um número de versão.</li>
+</ol>
+<p><b>macOS:</b> abra o Terminal e rode <code>git --version</code>. Se o Git não estiver instalado, o macOS oferece instalar as ferramentas de linha de comando; aceite e espere terminar.</p>
+<p>Depois, nos dois sistemas, diga ao Git quem é você (use o mesmo e-mail do GitHub):</p>
+<pre><code>git config --global user.name "Seu Nome"
+git config --global user.email "seu-email@exemplo.com"</code></pre>`},
+   {id:"f0d", t:"Conta no GitHub criada", m:"Guarda o histórico dos projetos e hospeda esta página",
+    how:`<ol>
+<li>Acesse <a href="https://github.com">github.com</a> e clique em Sign up. Informe e-mail, senha e nome de usuário.</li>
+<li>Escolha um nome de usuário profissional: ele aparece no endereço da sua página (<code>usuario.github.io</code>).</li>
+<li>Confirme o e-mail pelo link que o GitHub envia.</li>
+<li>Ative a verificação em duas etapas em Settings → Password and authentication.</li>
+</ol>
+<p>Nesta fase basta ter a conta. A conexão entre o computador e o GitHub fica para o momento de enviar o primeiro projeto.</p>`},
+   {id:"f0e", t:"Pasta de treino consultoria-ia criada", m:"Trabalhe sempre dentro dela",
+    how:`<p>Com o terminal aberto (próximo item), rode estes comandos, no PowerShell ou no Terminal do Mac:</p>
+<pre><code>cd ~
+mkdir consultoria-ia
+cd consultoria-ia
+git init</code></pre>
+<p>Confira com <code>pwd</code>: deve mostrar o caminho da pasta nova.</p>
+<p>Sugestão minha: crie a pasta na raiz do seu usuário, como acima, e não dentro de Documentos. No Windows, o Documentos costuma sincronizar com o OneDrive, o que pode atrapalhar projetos com muitos arquivos.</p>`},
+   {id:"f0f", t:"Sei abrir o terminal e usar pwd, ls e cd", m:"Guia oficial: code.claude.com/docs/en/terminal-guide",
+    how:`<p><b>Windows</b></p>
+<ol>
+<li>Pressione <code>Win + X</code> e escolha Windows PowerShell (ou Terminal).</li>
+<li>Veja a linha de comando: se começa com <code>PS C:\\Users\\SeuNome&gt;</code>, é o PowerShell, o certo. Se mostra só <code>C:\\Users\\SeuNome&gt;</code>, é o CMD: feche e abra o PowerShell.</li>
+<li>Se abriu "Windows PowerShell (x86)", feche e abra a versão sem x86; o Claude Code não funciona em 32 bits.</li>
+<li>Para colar um comando, use <code>Ctrl + V</code> ou o botão direito.</li>
+</ol>
+<p><b>macOS:</b> pressione <code>Cmd + Espaço</code>, digite Terminal e Enter. Cole com <code>Cmd + V</code>.</p>
+<p>Quatro comandos bastam por enquanto:</p>
+<pre><code>pwd         # mostra em que pasta você está
+ls          # lista os arquivos da pasta
+cd pasta    # entra na pasta
+cd ..       # volta uma pasta</code></pre>
+<p>Quem preferir não usar terminal pode usar o app Desktop do Claude, que roda o Claude Code sem ele; o download está em <a href="https://claude.com/download">claude.com/download</a>. A trilha segue pelo terminal.</p>`}
  ]},
  { id:"f1", title:"Fase 1 · Instalação e primeiro uso", when:"Semana 1",
    intro:"O instalador nativo é o método recomendado: não exige Node.js e se atualiza sozinho.",
@@ -309,6 +377,7 @@ PHASES.forEach(function(ph){
   sec.appendChild(el("h2", null, esc(ph.title)));
   sec.appendChild(el("p", {"class":"muted"}, esc(ph.when) + " · " + esc(ph.intro)));
   if (ph.note) sec.appendChild(el("div", {"class":"note"}, esc(ph.note)));
+  if (ph.warn) sec.appendChild(el("div", {"class":"note"}, "<b>Complicações para antecipar</b><ul>" + ph.warn.map(function(w){ return "<li>" + w + "</li>"; }).join("") + "</ul>"));
   if (ph.extra) {
     if (ph.extra.label) sec.appendChild(el("h3", null, esc(ph.extra.label)));
     var pre = el("pre"); var code = el("code"); code.textContent = ph.extra.pre; pre.appendChild(code);
@@ -335,7 +404,9 @@ PHASES.forEach(function(ph){
       li.classList.toggle("checked", cb.checked); save(); update();
     });
     li.classList.toggle("checked", cb.checked);
-    lab.appendChild(cb); lab.appendChild(t); li.appendChild(lab); ul.appendChild(li);
+    lab.appendChild(cb); lab.appendChild(t); li.appendChild(lab);
+    if (it.how) li.appendChild(el("details", {"class":"how"}, "<summary>Como fazer</summary><div>" + it.how + "</div>"));
+    ul.appendChild(li);
   });
   sec.appendChild(ul);
   phasesEl.appendChild(sec);
