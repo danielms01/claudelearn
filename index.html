@@ -173,11 +173,7 @@ S.checks = S.checks || {}; S.notes = S.notes || {}; S.hours = S.hours || {}; S.s
 function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch(e) {} }
 
 /* ---------- Conteúdo ---------- */
-var INSTALL =
-  "# Windows 11 (PowerShell)\n" +
-  "irm https://claude.ai/install.ps1 | iex\n\n" +
-  "# Conferir, em um terminal novo\n" +
-  "claude --version";
+var INSTALL = "irm https://claude.ai/install.ps1 | iex";
 
 var STRUCT =
   "consultoria-ia/\n" +
@@ -424,7 +420,7 @@ ${CODE("cd ~\nmkdir consultoria-ia\ncd consultoria-ia\ngit init")}
 <p>Sugestão minha: crie a pasta na raiz do seu usuário, como acima, e não dentro de Documentos. No Windows, o Documentos costuma sincronizar com o OneDrive, o que pode atrapalhar projetos com muitos arquivos.</p>`},
    {id:"f0f", t:"Sei abrir o PowerShell e usar pwd, ls e cd", m:"Guia oficial: code.claude.com/docs/en/terminal-guide",
     how:`<ol>
-<li>Clique com o botão direito no menu Iniciar (ou pressione <code>Win + X</code>) e escolha Terminal ou Windows PowerShell.</li>
+<li>Clique com o botão direito no menu Iniciar (ou pressione <code>Win + X</code>) e escolha Terminal ou Windows PowerShell, nas versões sem "(Admin)".</li>
 <li>Veja a linha de comando: se começa com <code>PS C:\\Users\\SeuNome&gt;</code>, é o PowerShell, o certo. Se mostra só <code>C:\\Users\\SeuNome&gt;</code>, é o CMD: feche e abra o PowerShell.</li>
 <li>Se abriu "Windows PowerShell (x86)", feche e abra a versão sem x86; o Claude Code não funciona em 32 bits.</li>
 <li>Para colar um comando, use <code>Ctrl + V</code> ou o botão direito.</li>
@@ -435,7 +431,7 @@ ${CODE("pwd         # mostra em que pasta você está\nls          # lista os ar
  ]},
  { id:"f1", title:"Fase 1 · Instalação e primeiro uso", when:"Semana 1",
    intro:`O instalador nativo é o método recomendado: não exige Node.js e se atualiza sozinho. Abra "Como fazer" em cada item.`,
-   extra:{ pre:INSTALL, label:"Comandos de instalação" },
+   extra:{ pre:INSTALL, label:"Comando de instalação (PowerShell)" },
    refs:[
      ["Quickstart oficial", D+"quickstart"],
      ["Guia de terminal para iniciantes (oficial)", D+"terminal-guide"],
@@ -447,9 +443,10 @@ ${CODE("pwd         # mostra em que pasta você está\nls          # lista os ar
    items:[
    {id:"f1a", t:"Instalador nativo executado", m:"Cole o comando no PowerShell e espere terminar",
     how:`<ol>
-<li>Abra o PowerShell (Fase 0, último item). Não precisa executar como administrador.</li>
-<li>Copie o comando do quadro "Comandos de instalação", acima desta lista, e cole no PowerShell.</li>
+<li>Abra o PowerShell (Fase 0, último item) <b>sem</b> a opção "Admin": a instalação não exige administrador. Se a janela abrir em <code>C:\\Windows\\System32</code>, ela provavelmente está como administrador; feche e abra de novo.</li>
+<li>Copie o comando do quadro "Comando de instalação", acima desta lista, e cole no PowerShell. É só essa linha; não rode mais nada junto.</li>
 <li>Aperte Enter e espere. O comando não mostra progresso enquanto baixa; termina quando aparece "Claude Code successfully installed!".</li>
+<li><b>Feche essa janela.</b> Só teste o <code>claude --version</code> em uma janela nova, no item seguinte: a janela em que você instalou não enxerga o programa novo.</li>
 </ol>
 <p><b>Se aparecer erro</b>, procure o seu caso:</p>
 <ul>
@@ -462,12 +459,19 @@ ${CODE("[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]
 ${VIDHTML()}`},
    {id:"f1b", t:"claude --version confirmou a instalação", m:"Feche e abra um PowerShell novo antes de testar",
     how:`<ol>
-<li>Feche o PowerShell e abra um novo.</li>
+<li>Feche o PowerShell e abra um novo (sem "Admin").</li>
 <li>Rode <code>claude --version</code>. Deve aparecer um número de versão, como <code>2.1.211 (Claude Code)</code>.</li>
-<li>Se aparecer "claude is not recognized", a pasta de instalação ainda não está no PATH. Rode o bloco abaixo, feche e abra o PowerShell de novo e teste outra vez.</li>
+<li>Se aparecer "claude is not recognized" (em português, "O termo 'claude' não é reconhecido"), descubra se o programa foi instalado. Rode:</li>
 </ol>
+${CODE("Test-Path \"$env:USERPROFILE\\.local\\bin\\claude.exe\"")}
+<ul>
+<li><b>Respondeu False:</b> o instalador não terminou ou não rodou. Volte ao item anterior, cole o comando de instalação no PowerShell e espere até aparecer "Claude Code successfully installed!". Se aparecer algum erro, guarde o texto.</li>
+<li><b>Respondeu True:</b> o programa está instalado, mas a pasta dele não está no PATH. Rode o bloco abaixo, feche e abra o PowerShell de novo e teste outra vez.</li>
+</ul>
 ${CODE(PATH_WIN)}
-<p>Para um diagnóstico completo, rode <code>claude doctor</code>: ele mostra a saúde da instalação sem abrir uma sessão. Mais detalhes em ${A(D+"troubleshoot-install","solução de problemas")}.</p>`},
+<p>Para testar sem mexer no PATH, rode o programa pelo caminho completo:</p>
+${CODE("& \"$env:USERPROFILE\\.local\\bin\\claude.exe\" --version")}
+<p>Para um diagnóstico completo, depois que o <code>claude</code> funcionar, rode <code>claude doctor</code>. Mais detalhes em ${A(D+"troubleshoot-install","solução de problemas")}.</p>`},
    {id:"f1c", t:"Login feito ao rodar claude na pasta do projeto", m:"A conta do plano pago abre no navegador",
     how:`<ol>
 <li>No terminal, entre na pasta de treino e inicie o Claude Code:</li>
