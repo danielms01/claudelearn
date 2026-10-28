@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trilha Claude Code e Vibecoding</title>
+<meta name="description" content="Trilha de 12 semanas do zero a especialista em Claude Code e vibecoding, com objetivos para marcar a evolução.">
+<style>
+:root{
+  --bg:#faf9f6; --card:#ffffff; --ink:#1f1d1a; --muted:#6b665e; --line:#e6e2d9;
+  --accent:#c2562a; --accent-ink:#ffffff; --ok:#2f7d4f; --bar:#ece8df; --code:#f3f0e8;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#16140f; --card:#1f1c16; --ink:#efebe2; --muted:#a39d90; --line:#352f25;
+    --accent:#e07a4d; --accent-ink:#1a120c; --ok:#5fbf86; --bar:#2c271e; --code:#27231b; }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent)}
+header.top{padding:32px 16px 8px;max-width:900px;margin:0 auto}
+header.top h1{font-size:clamp(1.5rem,4vw,2.2rem);line-height:1.2;margin:0 0 6px}
+header.top p{margin:0;color:var(--muted)}
+main{max-width:900px;margin:0 auto;padding:0 16px 64px}
+nav.phases{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);margin:16px -16px 20px;padding:8px 16px;display:flex;gap:6px;overflow-x:auto}
+nav.phases a{white-space:nowrap;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 12px;font-size:.85rem}
+nav.phases a span{color:var(--muted);margin-left:4px}
+nav.phases a:hover{border-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:0 0 18px}
+.card h2{margin:0 0 4px;font-size:1.25rem}
+.card h3{margin:18px 0 6px;font-size:1rem;color:var(--muted);font-weight:600}
+.card p{margin:6px 0}
+.muted{color:var(--muted)}
+.bar{height:10px;background:var(--bar);border-radius:999px;overflow:hidden;margin:10px 0 4px}
+.bar > i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+.bar.done > i{background:var(--ok)}
+.pct{font-size:.85rem;color:var(--muted)}
+.dash{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat b{display:block;font-size:1.6rem;line-height:1.1}
+.stat small{color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.badge{border:1px dashed var(--line);border-radius:999px;padding:4px 12px;font-size:.85rem;color:var(--muted)}
+.badge.on{border:1px solid var(--ok);color:var(--ok);font-weight:600}
+ul.items{list-style:none;margin:8px 0 0;padding:0}
+ul.items li{border-top:1px solid var(--line)}
+ul.items li:first-child{border-top:0}
+ul.items label{display:flex;gap:12px;align-items:flex-start;padding:10px 4px;cursor:pointer}
+ul.items input[type=checkbox]{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--accent)}
+ul.items .t{flex:1}
+ul.items .m{display:block;color:var(--muted);font-size:.85rem}
+ul.items li.checked .t > span:first-child{text-decoration:line-through;color:var(--muted)}
+li.group{font-weight:600;padding:12px 4px 2px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line)}
+li.opt .tag{font-size:.7rem;border:1px solid var(--line);border-radius:6px;padding:0 6px;margin-left:6px;color:var(--muted)}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:10px 12px;overflow-x:auto;font-size:.85rem;margin:6px 0;position:relative}
+code{background:var(--code);border-radius:5px;padding:1px 5px;font-size:.9em}
+pre code{background:none;padding:0}
+button,.btn{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.copy{position:absolute;top:6px;right:6px;padding:2px 8px;font-size:.75rem}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.week{border-top:1px solid var(--line);padding:12px 0}
+.week:first-of-type{border-top:0}
+.week.now{background:color-mix(in srgb,var(--accent) 8%,transparent);border-radius:10px;padding:12px 10px}
+.week .head{display:flex;gap:12px;align-items:flex-start}
+.week .head input[type=checkbox]{width:20px;height:20px;margin-top:3px;accent-color:var(--accent);flex:none}
+.week .ttl{flex:1}
+.week .ttl b{display:block}
+.week .ttl span{color:var(--muted);font-size:.9rem}
+.week .side{display:flex;gap:8px;align-items:center;font-size:.85rem;color:var(--muted)}
+.week input[type=number]{width:64px;font:inherit;padding:3px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.week textarea{width:100%;margin-top:8px;font:inherit;font-size:.9rem;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);min-height:60px;resize:vertical}
+input[type=date]{font:inherit;padding:4px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+footer{max-width:900px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:.85rem}
+footer ul{padding-left:18px}
+.note{border-left:3px solid var(--accent);padding:6px 12px;background:color-mix(in srgb,var(--accent) 6%,transparent);border-radius:0 8px 8px 0;margin:12px 0;font-size:.92rem}
+@media print{nav.phases,.actions,button.copy{display:none}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Trilha: do zero a especialista em Claude Code e Vibecoding</h1>
+  <p>12 semanas, cursos gratuitos e projetos práticos, para apoiar empresas a melhorar fluxos com IA. Atualizada em 28/10/2026.</p>
+</header>
+
+<main>
+  <nav class="phases" id="nav" aria-label="Fases"></nav>
+
+  <section class="card" id="painel">
+    <h2>Meu painel de evolução</h2>
+    <p class="muted">Marque cada objetivo ao concluir. O progresso fica salvo neste navegador; use Exportar para guardar uma cópia ou levar para outro computador.</p>
+    <div class="bar" id="barTotal"><i></i></div>
+    <div class="pct" id="pctTotal"></div>
+    <div class="dash">
+      <div class="stat"><b id="sObj">0/0</b><small>objetivos concluídos</small></div>
+      <div class="stat"><b id="sWeeks">0/12</b><small>semanas concluídas</small></div>
+      <div class="stat"><b id="sHours">0 h</b><small>horas registradas (previsto: <span id="plannedH"></span> h)</small></div>
+      <div class="stat"><b id="sNow">–</b><small id="sNowLbl">defina a data de início</small></div>
+    </div>
+    <div class="badges" id="badges"></div>
+    <div class="actions">
+      <label>Início da trilha: <input type="date" id="start"></label>
+      <button id="btnExport">Exportar progresso</button>
+      <button id="btnImport">Importar</button>
+      <button id="btnReset">Zerar tudo</button>
+      <input type="file" id="file" accept="application/json" hidden>
+    </div>
+  </section>
+
+  <div id="phases"></div>
+
+  <section class="card" id="cronograma">
+    <h2>Cronograma de 12 semanas</h2>
+    <p class="muted">Ritmo previsto de 5 a 6 horas por semana (estimativa). Registre as horas reais e anote aprendizados de cada semana.</p>
+    <div class="bar" id="barWeeks"><i></i></div>
+    <div class="pct" id="pctWeeks"></div>
+    <div id="weeks"></div>
+  </section>
+</main>
+
+<footer>
+  <h3>Como publicar no GitHub Pages</h3>
+  <ol>
+    <li>Crie um repositório e envie este arquivo com o nome <code>index.html</code>.</li>
+    <li>Em Settings → Pages, escolha a branch <code>main</code> e a pasta raiz.</li>
+    <li>Abra o endereço gerado. O progresso é salvo por navegador; exporte de vez em quando.</li>
+  </ol>
+  <h3>Fontes</h3>
+  <p>Cursos, durações e preços vêm de páginas de terceiros e de resultados de busca em 28/10/2026. Vários rankings foram escritos por quem vende cursos concorrentes. Confirme tudo nos sites antes de começar.</p>
+  <ul>
+    <li><a href="https://code.claude.com/docs/en/setup">Claude Code: instalação e requisitos (oficial)</a></li>
+    <li><a href="https://code.claude.com/docs/en/features-overview">Claude Code: visão geral de recursos (oficial)</a></li>
+    <li><a href="https://pasqualepillitteri.it/en/news/371/anthropic-academy-free-courses-claude">Anthropic Academy: cursos gratuitos</a></li>
+    <li><a href="https://www.datacamp.com/blog/best-claude-courses">The Best Claude Courses in 2026 (DataCamp)</a></li>
+    <li><a href="https://vibecodeschool.com/courses/claude-code-vibe-coding">Vibe Code School</a></li>
+    <li><a href="https://www.conversion.com.br/academy/curso/introducao-claude-code">Conversion Academy: Introdução ao Claude Code</a></li>
+    <li><a href="https://valorfinal.com.br/cursos/claude-code">ValorFinal: Curso de Claude Code</a></li>
+    <li><a href="https://horadecodar.com.br/claude-code-platzi/">Hora de Codar: Claude Code na Platzi</a></li>
+    <li><a href="https://www.okhlopkov.com/claude-code-setup-mcp-hooks-skills-2026/">Claude Code Setup 2026 (Okhlopkov)</a></li>
+  </ul>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+var LS = "trilha-claude-code-v1";
+var S = {};
+try { S = JSON.parse(localStorage.getItem(LS)) || {}; } catch(e) { S = {}; }
+S.checks = S.checks || {}; S.notes = S.notes || {}; S.hours = S.hours || {}; S.start = S.start || "";
+function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch(e) {} }
+
+/* ---------- Conteúdo ---------- */
+var INSTALL =
+  "# Windows (PowerShell)\n" +
+  "irm https://claude.ai/install.ps1 | iex\n\n" +
+  "# macOS, Linux e WSL\n" +
+  "curl -fsSL https://claude.ai/install.sh | bash\n\n" +
+  "# macOS (Homebrew)\n" +
+  "brew install --cask claude-code\n\n" +
+  "# Conferir\n" +
+  "claude --version";
+
+var STRUCT =
+  "consultoria-ia/\n" +
+  "  CLAUDE.md          # regras e contexto do laboratório\n" +
+  "  .mcp.json          # conexões externas, só as que usa\n" +
+  "  .claude/\n" +
+  "    skills/          # fluxos reutilizáveis\n" +
+  "    agents/          # subagentes\n" +
+  "  projetos/\n" +
+  "    painel-cobertura-pipeline/\n" +
+  "    relatorio-semanal-f7/";
+
+var PHASES = [
+ { id:"f0", title:"Fase 0 · Pré-requisitos e conta", when:"Semana 1",
+   intro:"Computador compatível, internet e um plano pago do Claude; o resto é gratuito.",
+   note:"O plano gratuito do Claude.ai não dá acesso ao Claude Code, segundo um blog brasileiro. Confirme preço e acesso na página oficial antes de assinar.",
+   items:[
+   {id:"f0a", t:"Plano pago do Claude contratado", m:"O Pro (US$ 20 por mês) é a porta de entrada"},
+   {id:"f0b", t:"Computador compatível confirmado", m:"macOS 13+, Windows 10 (1809+), Ubuntu 20.04+ ou Debian 10+; 4 GB de RAM ou mais"},
+   {id:"f0c", t:"Git instalado", m:"No Windows nativo, o Git para Windows é recomendado; sem ele o Claude Code usa o PowerShell"},
+   {id:"f0d", t:"Conta no GitHub criada", m:"Guarda o histórico dos projetos e permite desfazer erros"},
+   {id:"f0e", t:"Pasta de treino consultoria-ia criada", m:"Trabalhe sempre dentro dela"},
+   {id:"f0f", t:"Li o guia de terminal oficial", m:"Só se você nunca usou terminal. <a href=\"https://code.claude.com/docs/en/terminal-guide\">code.claude.com/docs/en/terminal-guide</a>"}
+ ]},
+ { id:"f1", title:"Fase 1 · Instalação e primeiro uso", when:"Semana 1",
+   intro:"O instalador nativo é o método recomendado: não exige Node.js e se atualiza sozinho.",
+   extra:{ pre:INSTALL },
+   items:[
+   {id:"f1a", t:"Instalador nativo executado"},
+   {id:"f1b", t:"claude --version confirmou a instalação"},
+   {id:"f1c", t:"Login feito ao rodar claude na pasta do projeto"},
+   {id:"f1d", t:"Primeiro pedido simples feito", m:"Por exemplo: \"explique o que há nesta pasta\""},
+   {id:"f1e", t:"/init gerou o CLAUDE.md"},
+   {id:"f1f", t:"/plan testado", m:"O agente propõe o plano antes de mexer em arquivos"},
+   {id:"f1g", t:"/compact e /config conhecidos", m:"Comprimir histórico longo e ajustar configurações"},
+   {id:"f1h", t:"Repositório Git criado com o primeiro commit"}
+ ]},
+ { id:"f2", title:"Fase 2 · Cursos gratuitos na ordem certa", when:"Semanas 1 a 9",
+   intro:"Primeiro a base oficial da Anthropic, depois prática guiada de vibecoding, depois skills e MCP. Durações segundo as fontes; confira em cada site.",
+   items:[
+   {id:"f2a", t:"1. Claude 101", m:"Anthropic Academy · cerca de 2 h · base de uso do Claude no trabalho"},
+   {id:"f2b", t:"2. Claude Code 101", m:"Anthropic Academy · 1,5 a 3 h · fluxo Explorar, Planejar, Codar e Commitar"},
+   {id:"f2c", t:"3. Vibe Coding using Claude Code", m:"<a href=\"https://vibecodeschool.com/courses/claude-code-vibe-coding\">Vibe Code School</a> · cerca de 14 h, 28 lições · prática guiada sem exigir experiência prévia"},
+   {id:"f2d", t:"4. Claude Code in Action", m:"Anthropic Academy · 1 a 3 h · contexto, GitHub, comandos e edição de código"},
+   {id:"f2e", t:"5. Curso em português da Conversion Academy", m:"<a href=\"https://www.conversion.com.br/academy/curso/introducao-claude-code\">Introdução ao Claude Code</a> · 6 módulos · não exige programação, segundo a página"},
+   {id:"f2f", t:"6. Introduction to Agent Skills", m:"Anthropic Academy · cerca de 2,5 h · empacotar instruções repetidas em skills"},
+   {id:"f2g", t:"7. Introduction to Model Context Protocol", m:"Anthropic Academy · duração não confirmada · conectar o Claude a sistemas externos"},
+   {id:"f2h", t:"8. Claude Code: A Highly Agentic Coding Assistant", m:"DeepLearning.AI · cerca de 1 h 50 · reforço com foco em MCP"},
+   {id:"f2i", t:"9. Introduction to Claude Cowork", m:"Anthropic Academy · duração não confirmada · fluxos de escritório, também para perfis não técnicos"},
+   {id:"f2j", t:"Building with the Claude API", opt:true, m:"Anthropic Academy · mais de 8 h · só se quiser construir soluções que chamam o Claude por código"},
+   {id:"f2k", t:"Curso da ValorFinal", opt:true, m:"<a href=\"https://valorfinal.com.br/cursos/claude-code\">95 aulas, cerca de 40 h</a> · certificado só para assinantes · qualidade não avaliada"}
+ ]},
+ { id:"f3", title:"Fase 3 · Setup profissional", when:"Semanas 6 a 8",
+   intro:"Cinco camadas, cada uma resolvendo um problema. Comece pequeno: um CLAUDE.md curto, só os servidores MCP que usa, um hook de segurança e uma skill para trabalho repetido.",
+   extra:{ pre:STRUCT, label:"Estrutura de pastas sugerida" },
+   items:[
+   {id:"f3a", t:"CLAUDE.md curto, revisado e ajustado", m:"Contexto fixo que entra em toda sessão"},
+   {id:"f3b", t:"Primeira skill criada em .claude/skills", m:"Fluxo sob demanda, como \"diagnóstico de funil\""},
+   {id:"f3c", t:"Um servidor MCP conectado a uma fonte de teste", m:"Conexão com Drive, planilhas ou CRM de teste"},
+   {id:"f3d", t:"Um hook de segurança configurado", m:"Roda sempre; serve para regras que não podem falhar, como bloquear ações perigosas"},
+   {id:"f3e", t:"Um subagente de revisão criado", m:"Contexto isolado para pesquisa ou revisão"},
+   {id:"f3f", t:"Editor e GitHub integrados ao fluxo", m:"Sugestão: VS Code para ler o que o agente produz"},
+   {id:"f3g", t:"Aprovação das ações do agente mantida ligada", m:"Enquanto estiver aprendendo; commit antes de mudanças grandes"}
+ ]},
+ { id:"f4", title:"Fase 4 · Projetos práticos (portfólio)", when:"Semanas 4 a 10",
+   intro:"Quatro projetos pequenos, cada um com antes e depois medido. Use sempre dados fictícios ou anonimizados e confirme a política da empresa para dados de CRM em ferramentas de IA.",
+   items:[
+   {g:"Projeto 1 · Painel Cobertura x Pipeline (semana 4)"},
+   {id:"p1a", t:"Construído com dados fictícios", m:"Página HTML com cobertura e pipeline por consultor, a partir de um CSV"},
+   {id:"p1b", t:"Revisado por mim, número por número"},
+   {id:"p1c", t:"Antes e depois medido"},
+   {id:"p1d", t:"Página do caso publicada no repositório"},
+   {g:"Projeto 3 · Skill de diagnóstico de funil (semana 6)"},
+   {id:"p3a", t:"Skill construída", m:"Recebe os dados e devolve causa provável (funil, cobertura ou execução) e ação"},
+   {id:"p3b", t:"Revisada por mim"},
+   {id:"p3c", t:"Antes e depois medido"},
+   {id:"p3d", t:"Página do caso publicada"},
+   {g:"Projeto 2 · Relatório semanal de F7 (semana 8)"},
+   {id:"p2a", t:"Script construído", m:"Transforma o export do CRM em resumo de fechamento e evolução de pipeline por ciclo"},
+   {id:"p2b", t:"Revisado por mim"},
+   {id:"p2c", t:"Antes e depois medido"},
+   {id:"p2d", t:"Página do caso publicada"},
+   {g:"Projeto 4 · Ferramenta de coaching por consultor (semana 10)"},
+   {id:"p4a", t:"Ferramenta construída", m:"Evolução individual e trilha de desenvolvimento, alimentada por planilha"},
+   {id:"p4b", t:"Revisada por mim"},
+   {id:"p4c", t:"Antes e depois medido"},
+   {id:"p4d", t:"Página do caso publicada"}
+ ]},
+ { id:"f5", title:"Fase 5 · Apoiar empresas a melhorar fluxos com IA", when:"Semanas 11 e 12",
+   intro:"O valor que você vende é escolher o fluxo certo, entregar um piloto que funciona no dia a dia e provar o ganho com número. Método sugerido, para ajustar com os primeiros casos reais.",
+   items:[
+   {id:"f5a", t:"Mapeei o fluxo atual", m:"Quem faz o quê, em qual sistema, quanto tempo leva e onde há retrabalho; acompanhe a rotina real"},
+   {id:"f5b", t:"Escolhi um fluxo pequeno", m:"Repetitivo, com dado acessível e resultado fácil de conferir; evite decisões sobre pessoas, metas ou remuneração"},
+   {id:"f5c", t:"Consultei jurídico e TI sobre dados antes de conectar sistemas reais", m:"LGPD e política interna de segurança"},
+   {id:"f5d", t:"Prototipei em dias com dados fictícios e mostrei ao usuário final"},
+   {id:"f5e", t:"Validei com quem usa", m:"Tempo economizado e erros encontrados na revisão humana"},
+   {id:"f5f", t:"Implantei com guarda-corpos", m:"Permissões mínimas, hooks, revisão humana e versão no Git"},
+   {id:"f5g", t:"Medi e documentei", m:"Antes e depois, custo de uso, instruções de manutenção e dono do fluxo"},
+   {id:"f5h", t:"Oferta de diagnóstico escrita", m:"Diagnóstico de um fluxo com piloto de 2 a 4 semanas; preço definido com base nos primeiros casos"}
+ ]}
+];
+
+var WEEKS = [
+ {n:1, f:"Conta, instalação, Claude 101 e Claude Code 101", d:"Claude Code rodando e CLAUDE.md gerado com /init", h:6},
+ {n:2, f:"Vibe Code School: módulos 1 e 2", d:"Primeiras lições e quizzes concluídos", h:5},
+ {n:3, f:"Vibe Code School: módulos 3 e 4", d:"Padrões de prompt e Plan Mode praticados", h:6},
+ {n:4, f:"Vibe Code School: módulo 5 e Projeto 1", d:"Painel Cobertura x Pipeline com dados fictícios", h:6},
+ {n:5, f:"Claude Code in Action e curso da Conversion Academy", d:"Fluxo com GitHub funcionando", h:5},
+ {n:6, f:"Agent Skills e Projeto 3", d:"Skill de diagnóstico de funil", h:5},
+ {n:7, f:"MCP e curso do DeepLearning.AI", d:"Um servidor MCP conectado a uma fonte de dados de teste", h:5},
+ {n:8, f:"Setup profissional e Projeto 2", d:"Hook de segurança, subagente de revisão e relatório F7 automatizado", h:6},
+ {n:9, f:"Claude Cowork e revisão dos projetos", d:"Um fluxo de escritório resolvido fora do terminal", h:5},
+ {n:10, f:"Projeto 4", d:"Ferramenta de coaching por consultor", h:6},
+ {n:11, f:"Fase 5: piloto com um fluxo real", d:"Mapa do fluxo, protótipo e medição antes e depois", h:6},
+ {n:12, f:"Portfólio e oferta", d:"Quatro páginas de caso e proposta de diagnóstico", h:5}
+];
+
+var MILESTONES = [
+ {p:25, t:"25% · Instalado e praticando"},
+ {p:50, t:"50% · Meio da trilha"},
+ {p:75, t:"75% · Setup e projetos de pé"},
+ {p:100, t:"100% · Pronto para o primeiro cliente"}
+];
+
+/* ---------- Helpers ---------- */
+function $(id){ return document.getElementById(id); }
+function el(tag, attrs, html){
+  var e = document.createElement(tag);
+  if (attrs) for (var k in attrs) { if (k === "class") e.className = attrs[k]; else e.setAttribute(k, attrs[k]); }
+  if (html != null) e.innerHTML = html;
+  return e;
+}
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function pad(n){ return (n < 10 ? "0" : "") + n; }
+function fmt(d){ return pad(d.getDate()) + "/" + pad(d.getMonth()+1); }
+function setBar(barId, pct){
+  var b = $(barId); b.firstElementChild.style.width = pct + "%";
+  b.className = "bar" + (pct >= 100 ? " done" : "");
+}
+
+/* ---------- Render ---------- */
+var nav = $("nav"), phasesEl = $("phases");
+
+PHASES.forEach(function(ph){
+  var sec = el("section", {"class":"card", id:ph.id});
+  sec.appendChild(el("h2", null, esc(ph.title)));
+  sec.appendChild(el("p", {"class":"muted"}, esc(ph.when) + " · " + esc(ph.intro)));
+  if (ph.note) sec.appendChild(el("div", {"class":"note"}, esc(ph.note)));
+  if (ph.extra) {
+    if (ph.extra.label) sec.appendChild(el("h3", null, esc(ph.extra.label)));
+    var pre = el("pre"); var code = el("code"); code.textContent = ph.extra.pre; pre.appendChild(code);
+    var cp = el("button", {"class":"copy", type:"button"}, "Copiar");
+    cp.addEventListener("click", function(){
+      var done = function(){ cp.textContent = "Copiado"; setTimeout(function(){ cp.textContent = "Copiar"; }, 1400); };
+      if (navigator.clipboard) navigator.clipboard.writeText(ph.extra.pre).then(done, function(){});
+    });
+    pre.appendChild(cp); sec.appendChild(pre);
+  }
+  sec.appendChild(el("div", {"class":"bar", id:"bar-"+ph.id}, "<i></i>"));
+  sec.appendChild(el("div", {"class":"pct", id:"pct-"+ph.id}));
+  var ul = el("ul", {"class":"items"});
+  ph.items.forEach(function(it){
+    if (it.g) { ul.appendChild(el("li", {"class":"group"}, esc(it.g))); return; }
+    var li = el("li", it.opt ? {"class":"opt"} : null);
+    var lab = el("label");
+    var cb = el("input", {type:"checkbox"});
+    cb.checked = !!S.checks[it.id];
+    cb.dataset.id = it.id; cb.dataset.phase = ph.id; if (it.opt) cb.dataset.opt = "1";
+    var t = el("span", {"class":"t"}, "<span>" + esc(it.t) + (it.opt ? "<span class=\"tag\">opcional</span>" : "") + "</span>" + (it.m ? "<span class=\"m\">" + it.m + "</span>" : ""));
+    cb.addEventListener("change", function(){
+      if (cb.checked) S.checks[it.id] = true; else delete S.checks[it.id];
+      li.classList.toggle("checked", cb.checked); save(); update();
+    });
+    li.classList.toggle("checked", cb.checked);
+    lab.appendChild(cb); lab.appendChild(t); li.appendChild(lab); ul.appendChild(li);
+  });
+  sec.appendChild(ul);
+  phasesEl.appendChild(sec);
+  var a = el("a", {href:"#"+ph.id}, esc(ph.title.split(" · ")[0]) + "<span id=\"nv-"+ph.id+"\">0%</span>");
+  nav.appendChild(a);
+});
+nav.insertBefore(el("a", {href:"#painel"}, "Painel"), nav.firstChild);
+var wk = el("a", {href:"#cronograma"}, "Cronograma<span id=\"nv-wk\">0/12</span>"); nav.appendChild(wk);
+
+var weeksEl = $("weeks");
+WEEKS.forEach(function(w){
+  var key = "w" + w.n;
+  var box = el("div", {"class":"week", id:"wk-"+w.n});
+  var head = el("div", {"class":"head"});
+  var cb = el("input", {type:"checkbox", "aria-label":"Semana " + w.n + " concluída"});
+  cb.checked = !!S.checks[key];
+  cb.addEventListener("change", function(){
+    if (cb.checked) S.checks[key] = true; else delete S.checks[key];
+    save(); update();
+  });
+  var ttl = el("div", {"class":"ttl"}, "<b>Semana " + w.n + " <span class=\"muted\" data-range=\"" + w.n + "\"></span></b><span>" + esc(w.f) + "</span><br><span>Entregável: " + esc(w.d) + "</span>");
+  var side = el("div", {"class":"side"}, "<span>previsto " + w.h + " h</span>");
+  var hrs = el("input", {type:"number", min:"0", step:"0.5", placeholder:"real", "aria-label":"Horas reais da semana " + w.n});
+  if (S.hours[key] != null && S.hours[key] !== "") hrs.value = S.hours[key];
+  hrs.addEventListener("input", function(){ if (hrs.value === "") delete S.hours[key]; else S.hours[key] = hrs.value; save(); update(); });
+  side.appendChild(hrs); side.appendChild(el("span", null, "h"));
+  head.appendChild(cb); head.appendChild(ttl); head.appendChild(side);
+  var ta = el("textarea", {placeholder:"O que aprendi, o que travou, o que fazer na próxima semana", "aria-label":"Anotações da semana " + w.n});
+  ta.value = S.notes[key] || "";
+  ta.addEventListener("input", function(){ if (ta.value) S.notes[key] = ta.value; else delete S.notes[key]; save(); });
+  box.appendChild(head); box.appendChild(ta); weeksEl.appendChild(box);
+});
+$("plannedH").textContent = WEEKS.reduce(function(a,w){ return a + w.h; }, 0);
+
+/* ---------- Atualização ---------- */
+function update(){
+  var all = 0, doneAll = 0;
+  PHASES.forEach(function(ph){
+    var n = 0, d = 0;
+    ph.items.forEach(function(it){ if (it.g || it.opt) return; n++; if (S.checks[it.id]) d++; });
+    var p = n ? Math.round(d / n * 100) : 0;
+    setBar("bar-"+ph.id, p);
+    $("pct-"+ph.id).textContent = d + " de " + n + " objetivos · " + p + "%";
+    $("nv-"+ph.id).textContent = p + "%";
+    all += n; doneAll += d;
+  });
+  var pt = all ? Math.round(doneAll / all * 100) : 0;
+  setBar("barTotal", pt);
+  $("pctTotal").textContent = "Progresso geral: " + pt + "%";
+  $("sObj").textContent = doneAll + "/" + all;
+
+  var wd = WEEKS.filter(function(w){ return S.checks["w"+w.n]; }).length;
+  setBar("barWeeks", Math.round(wd / WEEKS.length * 100));
+  $("pctWeeks").textContent = wd + " de " + WEEKS.length + " semanas concluídas";
+  $("sWeeks").textContent = wd + "/" + WEEKS.length;
+  $("nv-wk").textContent = wd + "/" + WEEKS.length;
+
+  var hrs = 0; for (var k in S.hours) { var v = parseFloat(String(S.hours[k]).replace(",", ".")); if (!isNaN(v)) hrs += v; }
+  $("sHours").textContent = (Math.round(hrs * 10) / 10) + " h";
+
+  var bd = $("badges"); bd.innerHTML = "";
+  MILESTONES.forEach(function(m){ bd.appendChild(el("span", {"class":"badge" + (pt >= m.p ? " on" : "")}, (pt >= m.p ? "✓ " : "") + esc(m.t))); });
+
+  schedule();
+}
+
+function schedule(){
+  var nowWeek = null;
+  document.querySelectorAll(".week").forEach(function(b){ b.classList.remove("now"); });
+  document.querySelectorAll("[data-range]").forEach(function(s){ s.textContent = ""; });
+  if (S.start) {
+    var p = S.start.split("-"); var d0 = new Date(+p[0], +p[1]-1, +p[2]);
+    if (!isNaN(d0.getTime())) {
+      for (var i = 1; i <= 12; i++) {
+        var a = new Date(d0.getTime()); a.setDate(a.getDate() + 7*(i-1));
+        var b = new Date(a.getTime()); b.setDate(b.getDate() + 6);
+        var sp = document.querySelector("[data-range=\"" + i + "\"]");
+        if (sp) sp.textContent = "· " + fmt(a) + " a " + fmt(b);
+      }
+      var today = new Date(); today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      var diff = Math.floor((today - d0) / 86400000);
+      if (diff < 0) { $("sNow").textContent = "Início em " + fmt(d0); $("sNowLbl").textContent = "a trilha ainda não começou"; }
+      else {
+        var wnum = Math.floor(diff / 7) + 1;
+        if (wnum > 12) { $("sNow").textContent = "Fim"; $("sNowLbl").textContent = "as 12 semanas já passaram"; }
+        else { nowWeek = wnum; $("sNow").textContent = "Semana " + wnum; $("sNowLbl").textContent = "você está aqui, pelo calendário"; }
+      }
+    }
+  } else { $("sNow").textContent = "–"; $("sNowLbl").textContent = "defina a data de início"; }
+  if (nowWeek) { var nb = $("wk-" + nowWeek); if (nb) nb.classList.add("now"); }
+}
+
+/* ---------- Ações ---------- */
+$("start").value = S.start;
+$("start").addEventListener("change", function(){ S.start = this.value; save(); schedule(); });
+
+$("btnExport").addEventListener("click", function(){
+  var blob = new Blob([JSON.stringify(S, null, 2)], {type:"application/json"});
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = "progresso-trilha-claude-code.json"; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+});
+$("btnImport").addEventListener("click", function(){ $("file").click(); });
+$("file").addEventListener("change", function(){
+  var f = this.files && this.files[0]; if (!f) return;
+  var r = new FileReader();
+  r.onload = function(){
+    try {
+      var d = JSON.parse(r.result);
+      if (!d || typeof d !== "object" || typeof d.checks !== "object") throw new Error("formato");
+      S = { checks:d.checks||{}, notes:d.notes||{}, hours:d.hours||{}, start:d.start||"" };
+      save(); location.reload();
+    } catch(e) { alert("Arquivo inválido. Use um JSON exportado por esta página."); }
+  };
+  r.readAsText(f);
+});
+$("btnReset").addEventListener("click", function(){
+  if (confirm("Apagar todo o progresso, horas e anotações deste navegador?")) {
+    try { localStorage.removeItem(LS); } catch(e) {}
+    location.reload();
+  }
+});
+
+update();
+})();
+</script>
+</body>
+</html>
